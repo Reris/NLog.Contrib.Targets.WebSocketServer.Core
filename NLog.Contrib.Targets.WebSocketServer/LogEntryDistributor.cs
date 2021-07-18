@@ -1,18 +1,19 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog.Contrib.Targets.WebSocketServer.CommandHandlers;
+using Owin.WebSocket;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.WebSockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using vtortola.WebSockets;
 
 namespace NLog.Contrib.Targets.WebSocketServer
 {
@@ -22,7 +23,6 @@ namespace NLog.Contrib.Targets.WebSocketServer
         readonly BufferBlock<LogEntry> _block;
         readonly CancellationTokenSource _cancel;
         readonly ReaderWriterLockSlim _semaphore;
-        readonly WebSocketListener _listener;
         readonly List<WebSocketWrapper> _connections;
         readonly JsonSerializer _serializer;
         readonly String _ipAddressStart;
@@ -32,15 +32,9 @@ namespace NLog.Contrib.Targets.WebSocketServer
 
         Int32 _disposed;
 
-        public LogEntryDistributor(Int32 port, String ipAddressStart, Int32 maxConnectedClients, TimeSpan clientTimeout)
+        public LogEntryDistributor(Int32 maxConnectedClients, TimeSpan clientTimeout)
         {
             _maxConnectedClients = maxConnectedClients;
-            _ipAddressStart = ipAddressStart;
-            _listener = new WebSocketListener(new IPEndPoint(IPAddress.Any, port), new WebSocketListenerOptions
-            {
-                PingTimeout = clientTimeout
-            });
-            _listener.Standards.RegisterStandard(new WebSocketFactoryRfc6455());
             _cancel = new CancellationTokenSource();
             _block = new BufferBlock<LogEntry>(new DataflowBlockOptions() { CancellationToken = _cancel.Token });
             _connections = new List<WebSocketWrapper>();
@@ -49,40 +43,10 @@ namespace NLog.Contrib.Targets.WebSocketServer
 
             _commandHandlers = new[] { new FilterCommandHandler() };
 
-            Task.Run(() => _listener.StartAsync(_cancel.Token));
-            Task.Run((Func<Task>)AcceptConnections);
             Task.Run((Func<Task>)ReceiveAndBroadcast);
         }
 
-        private async Task AcceptConnections()
-        {
-            while (!_cancel.IsCancellationRequested)
-            {
-                var con = await _listener.AcceptWebSocketAsync(_cancel.Token).ConfigureAwait(false);
-
-                if (!CanAcceptConnection(con))
-                {
-                    DisconnectWebSocket(con);
-                    continue;
-                }
-
-                if (!TryAddWebSocketToPool(con))
-                    DisconnectWebSocket(con);
-            }
-        }
-
-        private bool CanAcceptConnection(WebSocket con)
-        {
-            if (String.IsNullOrEmpty(_ipAddressStart))
-                return true;
-
-            if (IPAddress.IsLoopback(con.RemoteEndpoint.Address))
-                return true;
-
-            return con.RemoteEndpoint.Address.ToString().StartsWith(_ipAddressStart);
-        }
-
-        private Boolean TryAddWebSocketToPool(WebSocket con)
+        internal Boolean TryAddWebSocketToPool(IWebSocket con)
         {
             try
             {
@@ -93,7 +57,6 @@ namespace NLog.Contrib.Targets.WebSocketServer
 
                 var ws = new WebSocketWrapper(con);
                 _connections.Add(ws);
-                Task.Run(() => AcceptWebSocketCommands(ws));
                 return true;
             }
             finally
@@ -102,17 +65,11 @@ namespace NLog.Contrib.Targets.WebSocketServer
             }
         }
 
-        private static void DisconnectWebSocket(WebSocket con)
-        {
-            Task.Run(() => con.Dispose());
-        }
-
         private async Task ReceiveAndBroadcast()
         {
             while (!_cancel.IsCancellationRequested)
             {
                 var message = await _block.ReceiveAsync(_cancel.Token).ConfigureAwait(false);
-                RemoveDisconnected();
                 ParallelBroadcastLogEntry(message);
             }
         }
@@ -154,47 +111,41 @@ namespace NLog.Contrib.Targets.WebSocketServer
         {
             try
             {
-                if (!ws.WebSocket.IsConnected)
-                    return;
+                //if (ws.WebSocket.State != WebSocketState.Open)
+                //    return;
 
                 if (ws.Expression != null && !ws.Expression.IsMatch(logEntry.Line))
                     return;
 
-                using (var wsmsg = ws.WebSocket.CreateMessageWriter(WebSocketMessageType.Text))
-                using (var writer = new StreamWriter(wsmsg, Encoding.UTF8, 1024, true))
-                {
-                    _serializer.Serialize(writer, logEntry);
-                }
+                ws.WebSocket.SendText(new ArraySegment<byte>(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(logEntry))), true, _cancel.Token);
             }
-            catch
+            catch (Exception ex)
             {
-                DisconnectWebSocket(ws.WebSocket);
             }
         }
 
-        private async Task AcceptWebSocketCommands(WebSocketWrapper ws)
+        internal async Task AcceptWebSocketCommands(string message, IWebSocket webSocket)
         {
-            while (ws.WebSocket.IsConnected && !_cancel.IsCancellationRequested)
+            try
             {
-                try
+                if (message == null) // server shutting down
+                    return;
+
+                var json = JObject.Parse(message);
+                var command = json.Property("command");
+
+                if (command == null || command.Value == null)
+                    return;
+
+                var socket = _connections.FirstOrDefault(w => w.WebSocket == webSocket);
+                if (socket == null)
                 {
-                    var message = await ws.WebSocket.ReadStringAsync(_cancel.Token).ConfigureAwait(false);
-
-                    if (message == null) // server shutting down
-                        continue;
-
-                    var json = JObject.Parse(message);
-                    var command = json.Property("command");
-
-                    if (command == null || command.Value == null)
-                        continue;
-
-                    HandleCommand(command.Value.ToString(), json, ws);
+                    return;
                 }
-                catch
-                {
-                    DisconnectWebSocket(ws.WebSocket);
-                }
+                HandleCommand(command.Value.ToString(), json, socket);
+            }
+            catch
+            {
             }
         }
 
@@ -212,33 +163,34 @@ namespace NLog.Contrib.Targets.WebSocketServer
             }
         }
 
-        private void RemoveDisconnected()
-        {
-            try
-            {
-                _semaphore.EnterUpgradeableReadLock();
+        //private void RemoveDisconnected()
+        //{
+        //    try
+        //    {
+        //        _semaphore.EnterUpgradeableReadLock();
 
-                var disconnected = _connections.Where(c => !c.WebSocket.IsConnected).ToList();
-                if (!disconnected.Any())
-                    return;
+        //        var disconnected = _connections.Where(c => !c.WebSocket.IsConnected).ToList();
+        //        if (!disconnected.Any())
+        //            return;
 
-                RemoveDisconnected(disconnected);
-            }
-            finally
-            {
-                _semaphore.ExitUpgradeableReadLock();
-            }
-        }
+        //        RemoveDisconnected(disconnected);
+        //    }
+        //    finally
+        //    {
+        //        _semaphore.ExitUpgradeableReadLock();
+        //    }
+        //}
 
-        private void RemoveDisconnected(List<WebSocketWrapper> disconnected)
+        internal void RemoveDisconnected(IWebSocket webSocket)
         {
             try
             {
                 _semaphore.EnterWriteLock();
-                foreach (var d in disconnected)
+
+                var socket = _connections.FirstOrDefault(w => w.WebSocket == webSocket);
+                if (socket != null)
                 {
-                    _connections.Remove(d);
-                    d.WebSocket.Dispose();
+                    _connections.Remove(socket);
                 }
             }
             finally
@@ -257,7 +209,6 @@ namespace NLog.Contrib.Targets.WebSocketServer
 
             _cancel.Cancel();
             _semaphore.Dispose();
-            _listener.Dispose();
         }
 
         public void Dispose()

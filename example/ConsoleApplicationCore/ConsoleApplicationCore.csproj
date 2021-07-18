@@ -15,8 +15,4 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\NLog.Contrib.Targets.WebSocketServer\NLog.Contrib.Targets.WebSocketServer.csproj" />
-  </ItemGroup>
-
 </Project>

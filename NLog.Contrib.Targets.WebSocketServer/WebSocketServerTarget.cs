@@ -1,5 +1,6 @@
 ﻿using NLog.Config;
 using NLog.Targets;
+using Owin.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,10 +36,10 @@ namespace NLog.Contrib.Targets.WebSocketServer
         {
             try
             {
-                _distributor = new LogEntryDistributor(Port, IPAddressStartsWith, MaxConnectedClients, ClientTimeOut);
+                _distributor = new LogEntryDistributor(MaxConnectedClients, ClientTimeOut);
                 _enabled = true;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 _enabled = false;
                 if (ThrowExceptionIfSetupFails)
@@ -67,5 +68,11 @@ namespace NLog.Contrib.Targets.WebSocketServer
                 // Swallow exceptions during writting
             }
         }
+
+        public bool Subscribe(IWebSocket con) => _distributor.TryAddWebSocketToPool(con);
+
+        public void Unsubscribe(IWebSocket con) => _distributor.RemoveDisconnected(con);
+
+        public async Task AcceptWebSocketCommands(string message, IWebSocket webSocket) => await _distributor.AcceptWebSocketCommands(message, webSocket);
     }
 }

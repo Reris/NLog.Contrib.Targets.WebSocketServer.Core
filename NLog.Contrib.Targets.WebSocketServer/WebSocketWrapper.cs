@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Owin.WebSocket;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using vtortola.WebSockets;
 
 namespace NLog.Contrib.Targets.WebSocketServer
 {
     public interface IWebSocketWrapper
     {
-        WebSocket WebSocket { get; }
+        IWebSocket WebSocket { get; }
         Regex Expression { get; set; }
     }
     public sealed class WebSocketWrapper : IWebSocketWrapper
     {
-        public WebSocket WebSocket { get; private set; }
+        public IWebSocket WebSocket { get; private set; }
         public Regex Expression { get; set; }
 
-        public WebSocketWrapper(WebSocket webSocket)
+        public WebSocketWrapper(IWebSocket webSocket)
         {
             WebSocket = webSocket;
         }
