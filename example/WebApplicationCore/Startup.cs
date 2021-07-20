@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Owin.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebFormApplication;
 
 namespace WebApplicationCore
 {
@@ -23,6 +25,11 @@ namespace WebApplicationCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+
+            services.AddHttpContextAccessor();
+
+            services.AddTransient<LogListener>();
+            services.AddTransient<WebSocketConnectionMiddleware<LogListener>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +45,8 @@ namespace WebApplicationCore
             }
 
             app.UseStaticFiles();
+
+            app.UseOwin(pipeline => pipeline(next => app.ApplicationServices.GetService<WebSocketConnectionMiddleware<LogListener>>().InvokeAsync));
 
             app.UseRouting();
 

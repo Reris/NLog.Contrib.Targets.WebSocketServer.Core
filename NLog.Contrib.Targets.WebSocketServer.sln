@@ -48,7 +48,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.WebSocket", "Owin.WebS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.Contrib.Targets.WebSocketServerCore", "NLog.Contrib.Targets.WebSocketServerCore\NLog.Contrib.Targets.WebSocketServerCore.csproj", "{50196B0D-BDA1-44CC-8E03-9603979DCAF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationCore", "example\AshxWebSocketApplication\WebApplicationCore\WebApplicationCore.csproj", "{5D466615-F2D0-4DFB-829A-DD12B838C9D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplicationCore", "example\WebApplicationCore\WebApplicationCore.csproj", "{F78AD37A-99C7-4894-A9B8-0F870428CDC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebFormApplication", "example\WebFormApplication\WebFormApplication.csproj", "{D76B7B60-C65B-4E29-8B32-CF0AFD81BC37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.Contrib.Targets.WebSocketServer", "NLog.Contrib.Targets.WebSocketServer\NLog.Contrib.Targets.WebSocketServer.csproj", "{43EF2937-D60B-4599-B474-DFFA18AE9486}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,10 +80,18 @@ Global
 		{50196B0D-BDA1-44CC-8E03-9603979DCAF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50196B0D-BDA1-44CC-8E03-9603979DCAF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50196B0D-BDA1-44CC-8E03-9603979DCAF9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D466615-F2D0-4DFB-829A-DD12B838C9D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D466615-F2D0-4DFB-829A-DD12B838C9D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D466615-F2D0-4DFB-829A-DD12B838C9D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D466615-F2D0-4DFB-829A-DD12B838C9D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F78AD37A-99C7-4894-A9B8-0F870428CDC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F78AD37A-99C7-4894-A9B8-0F870428CDC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F78AD37A-99C7-4894-A9B8-0F870428CDC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F78AD37A-99C7-4894-A9B8-0F870428CDC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D76B7B60-C65B-4E29-8B32-CF0AFD81BC37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D76B7B60-C65B-4E29-8B32-CF0AFD81BC37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D76B7B60-C65B-4E29-8B32-CF0AFD81BC37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D76B7B60-C65B-4E29-8B32-CF0AFD81BC37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43EF2937-D60B-4599-B474-DFFA18AE9486}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43EF2937-D60B-4599-B474-DFFA18AE9486}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43EF2937-D60B-4599-B474-DFFA18AE9486}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43EF2937-D60B-4599-B474-DFFA18AE9486}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,7 +99,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3DF51BF5-BE51-4491-864F-B1C184218D33} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
 		{B636421E-E445-400D-B58E-EBE68411E964} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
-		{5D466615-F2D0-4DFB-829A-DD12B838C9D1} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
+		{F78AD37A-99C7-4894-A9B8-0F870428CDC3} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
+		{D76B7B60-C65B-4E29-8B32-CF0AFD81BC37} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {81808C6C-F597-4F4B-8BCE-8459784158A0}

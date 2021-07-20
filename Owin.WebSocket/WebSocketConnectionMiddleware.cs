@@ -7,7 +7,9 @@ using CommonServiceLocator;
 
 namespace Owin.WebSocket
 {
-    public class WebSocketConnectionMiddleware<T> : OwinMiddleware where T : WebSocketConnection
+    public class WebSocketConnectionMiddleware<T> 
+        : OwinMiddleware 
+        where T : WebSocketConnection
     {
         private readonly Regex mMatchPattern;
         private readonly IServiceLocator mServiceLocator;

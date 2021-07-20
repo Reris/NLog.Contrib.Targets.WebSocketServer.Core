@@ -127,6 +127,10 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\NLog.Contrib.Targets.WebSocketServer\NLog.Contrib.Targets.WebSocketServer.csproj">
+      <Project>{43ef2937-d60b-4599-b474-dffa18ae9486}</Project>
+      <Name>NLog.Contrib.Targets.WebSocketServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Owin.WebSocket.Abstractions\Owin.WebSocket.Abstractions.csproj">
       <Project>{6b270a71-67a2-432a-8aac-c6cf2c7e561b}</Project>
       <Name>Owin.WebSocket.Abstractions</Name>
