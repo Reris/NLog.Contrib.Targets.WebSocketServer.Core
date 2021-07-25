@@ -1,0 +1,85 @@
+﻿
+body {
+    background-color:#222;
+    color:#fff;
+    font-family:'Segoe UI';
+}
+
+label{
+    margin-left:30px;
+}
+
+input{
+    border:1px solid #444;
+    border-radius:4px;
+    margin:0 5px 0 5px;
+    line-height:20px;
+}
+
+input[type=number]{
+    width:50px;
+    text-align:center;
+}
+
+input[type=text]{
+    width:200px;
+    padding-left:10px;
+    transition:width linear .1s;
+}
+
+button{
+    padding:5px 10px;
+    border-radius:3px;
+}
+
+#header{
+    border-bottom:1px solid #AAA;
+    padding:5px;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    background-color:#333;
+    white-space:nowrap;
+}
+
+#add-source{
+    width:200px;
+}
+
+#regex{
+    width:100px;
+}
+
+#highlight{
+    width:100px;
+}
+
+#log-container{
+    margin-top:60px;
+}
+
+.blink{
+    animation-name: blinker;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes blinker {  
+    0% { opacity: .3; }
+    50% { opacity:.7;}
+    100% { opacity: 1.0; }
+}
+.log-highlight{
+    background-color:yellow;
+    color:black;
+}
+.log-highlight-error{
+    background-color:darkred;
+    color:white;
+}
+.log-highlight-warn{
+    background-color:lightgoldenrodyellow;
+    color:dimgray;
+}

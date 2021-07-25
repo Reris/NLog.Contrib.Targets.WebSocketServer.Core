@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>NLog.Contrib.Targets.WebSocket</AssemblyName>
+    <RootNamespace>NLog.Contrib.Targets.WebSocket</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="NLog" Version="4.7.10" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Owin.WebSocket.Abstractions\Owin.WebSocket.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
