@@ -1,8 +1,8 @@
-# NLog.Contrib.Targets.WebSocketServer
+# NLog.Contrib.Targets.WebSocket
 
 Broadcast your servers´ logs to websocket connections in real-time with minimal effort. Subscribe to a regular expressions to remove undesired lines. Simplifies log monitoring, allowing that a simple web browser to watch over multiple servers´ logs interpolating the lines by timestamp. Not a replacement of a proper monitoring tool, but handy for watching over logs with little logistic effort.
 
-NLog.Contrib.Targets.WebSocketServer is a [NLog target](https://github.com/nlog/nlog/wiki/Targets) that instead of writing on a file, or showing the log on the console, broadcast the log entries to the connected websocket connections.
+NLog.Contrib.Targets.WebSocket is a [NLog target](https://github.com/nlog/nlog/wiki/Targets) that instead of writing on a file, or showing the log on the console, broadcast the log entries to the connected websocket connections.
 
 Features:
  * **Fully integrated with NLog**: it does not require changes in your application code beyond the configuration.
@@ -11,17 +11,17 @@ Features:
  * **Subscribe to Regular Expressions**: Is it possible to send a message throug the WebSocket connection to indicate the expression to which you want to subscribe. Only log entries matching that regex will be sent.
  * **Scalable**: NLog and WebSocketListener components are decoupled by a [producer-consumer pattern](http://www.ni.com/white-paper/3023/en/), so NLog will append the log entries to `WebSocketServerTarget` in `O(1)` time always, and another thread/threads are responsible of distributing that log entry to the clients. Still, if the component has a big number of connected clients, it may interfere with your application performance. See the `MaxConnectedClients` configuration setting. The queue is configured to have a bounding capacity of 1000 items, if the queue gets full, items will start to be discarded.
  
-[Checkout this example of a log viewer done in AngularJS](//github.com/vtortola/NLog.Contrib.Targets.WebSocketServer/wiki/WebSocket-log-viewer-UI-example-with-AngularJS). 
+[Checkout this example of a log viewer done in AngularJS](//github.com/vtortola/NLog.Contrib.Targets.WebSocket/wiki/WebSocket-log-viewer-UI-example-with-AngularJS). 
 
-![AngularJS Log viewer](http://vtortola.github.io/NLog.Contrib.Targets.WebSocketServer/screenshot.png)
+![AngularJS Log viewer](http://vtortola.github.io/NLog.Contrib.Targets.WebSocket/screenshot.png)
 
 ## Installation
 
 ### NuGet
 
-[NLog.Contrib.Targets.WebSocketServer is available in NuGet](https://www.nuget.org/packages/NLog.Contrib.Targets.WebSocketServer/).
+[NLog.Contrib.Targets.WebSocket is available in NuGet](https://www.nuget.org/packages/NLog.Contrib.Targets.WebSocket/).
 ```
-PM> Install-Package NLog.Contrib.Targets.WebSocketServer
+PM> Install-Package NLog.Contrib.Targets.WebSocket
 ```
 
 ## Configuration

@@ -1,7 +1,7 @@
 /* ng-websocket-log-viewer 1.0.0
  * ------------------------------------
- * This is an AngularJS component to watch logs in real-time using (but not limited to) NLog.Contrib.Targets.WebSocketServer
- * Please visit: https://github.com/vtortola/NLog.Contrib.Targets.WebSocketServer
+ * This is an AngularJS component to watch logs in real-time using (but not limited to) NLog.Contrib.Targets.WebSocket
+ * Please visit: https://github.com/vtortola/NLog.Contrib.Targets.WebSocket
  */
 
 angular.module("ng-websocket-log-viewer", [])
