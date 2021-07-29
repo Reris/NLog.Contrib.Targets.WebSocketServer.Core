@@ -25,6 +25,8 @@ namespace NLogWebSocketApplication
         {
             services.AddRazorPages();
 
+            services.AddControllers();
+
             services.AddNLogTargetWebSocket();
         }
 
@@ -51,6 +53,7 @@ namespace NLogWebSocketApplication
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }
