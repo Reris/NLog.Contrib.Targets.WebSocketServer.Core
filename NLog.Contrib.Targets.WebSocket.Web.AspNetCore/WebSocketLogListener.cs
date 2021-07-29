@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using NLog;
 using NLog.Contrib.Targets.WebSocket;
+using NLog.Targets.Wrappers;
 using Owin.WebSocket;
 using System;
 using System.Net.WebSockets;
@@ -38,6 +39,10 @@ namespace NLog.Contrib.Targets.WebSocket.Web.AspNetCore
                 if (target is WebSocketTarget webSocketServerTarget)
                 {
                     webSocketServerTarget.Subscribe(mWebSocket);
+                }
+                else if (target is WrapperTargetBase wrapperTarget && wrapperTarget.WrappedTarget is WebSocketTarget wrapperWebSocketServerTarget)
+                {
+                    wrapperWebSocketServerTarget.Subscribe(mWebSocket);
                 }
             }
         }

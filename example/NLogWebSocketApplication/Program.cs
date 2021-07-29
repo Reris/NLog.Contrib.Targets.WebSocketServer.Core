@@ -10,16 +10,16 @@ namespace NLogWebSocketApplication
     {
         public static void Main(string[] args)
         {
-            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            //var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-                logger.Debug("init main");
+                //logger.Debug("init main");
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception exception)
             {
                 //NLog: catch setup errors
-                logger.Error(exception, "Stopped program because of exception");
+                //logger.Error(exception, "Stopped program because of exception");
                 throw;
             }
             finally
