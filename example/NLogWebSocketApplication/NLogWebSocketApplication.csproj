@@ -6,13 +6,29 @@
 
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.7.10" />
+    <PackageReference Include="NLog.Contrib.Targets.WebSocket.Web.AspNetCore" Version="1.0.0" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.13.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\NLog.Contrib.Targets.WebSocket.Web.AspNetCore\NLog.Contrib.Targets.WebSocket.Web.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\NLog.Contrib.Targets.WebSocket\NLog.Contrib.Targets.WebSocket.csproj" />
-    <ProjectReference Include="..\..\Owin.WebSocket.Abstractions\Owin.WebSocket.Abstractions.csproj" />
+    <Content Update="C:\Users\comm100\.nuget\packages\nlog.contrib.targets.websocket.web.aspnetcore\1.0.0\contentFiles\any\netcoreapp3.1\WebSocketLoggerViewer\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\comm100\.nuget\packages\nlog.contrib.targets.websocket.web.aspnetcore\1.0.0\contentFiles\any\netcoreapp3.1\WebSocketLoggerViewer\scripts\angular.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\comm100\.nuget\packages\nlog.contrib.targets.websocket.web.aspnetcore\1.0.0\contentFiles\any\netcoreapp3.1\WebSocketLoggerViewer\scripts\ng-websocket-log-viewer-1.0.0.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\comm100\.nuget\packages\nlog.contrib.targets.websocket.web.aspnetcore\1.0.0\contentFiles\any\netcoreapp3.1\WebSocketLoggerViewer\scripts\web-viewer.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\comm100\.nuget\packages\nlog.contrib.targets.websocket.web.aspnetcore\1.0.0\contentFiles\any\netcoreapp3.1\WebSocketLoggerViewer\styles\ng-websocket-log-viewer-1.0.0.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\comm100\.nuget\packages\nlog.contrib.targets.websocket.web.aspnetcore\1.0.0\contentFiles\any\netcoreapp3.1\WebSocketLoggerViewer\styles\web-viewer.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

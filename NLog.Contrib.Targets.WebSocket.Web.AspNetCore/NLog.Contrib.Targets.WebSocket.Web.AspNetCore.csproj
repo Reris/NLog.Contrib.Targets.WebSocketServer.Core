@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>Samuel Su</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +13,10 @@
     <None Remove="WebSocketLoggerViewer\scripts\web-viewer.js" />
     <None Remove="WebSocketLoggerViewer\styles\ng-websocket-log-viewer-1.0.0.css" />
     <None Remove="WebSocketLoggerViewer\styles\web-viewer.css" />
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>NLog.Contrib.Targets.WebSocket</AssemblyName>
     <RootNamespace>NLog.Contrib.Targets.WebSocket</RootNamespace>
+    <Authors>Samuel Su</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +16,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Owin.WebSocket.Abstractions\Owin.WebSocket.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
