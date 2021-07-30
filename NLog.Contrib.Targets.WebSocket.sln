@@ -46,7 +46,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.Contrib.Targets.WebSoc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.Contrib.Targets.WebSocket.Web.AspNetCore", "NLog.Contrib.Targets.WebSocket.Web.AspNetCore\NLog.Contrib.Targets.WebSocket.Web.AspNetCore.csproj", "{E0E9E3D0-6150-4AD2-9070-FC2260340CBA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLogWebSocketApplication", "example\NLogWebSocketApplication\NLogWebSocketApplication.csproj", "{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLogWebSocketApplication", "example\NLogWebSocketApplication\NLogWebSocketApplication.csproj", "{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
