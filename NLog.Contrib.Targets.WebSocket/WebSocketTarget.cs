@@ -1,4 +1,5 @@
-﻿using NLog.Config;
+﻿using NLog.Common;
+using NLog.Config;
 using NLog.Targets;
 using Owin.WebSocket;
 using System;
@@ -67,6 +68,16 @@ namespace NLog.Contrib.Targets.WebSocket
             {
                 // Swallow exceptions during writting
             }
+        }
+
+        protected override void WriteAsyncThreadSafe(AsyncLogEventInfo logEvent)
+        {
+            base.WriteAsyncThreadSafe(logEvent);
+        }
+
+        protected override void WriteAsyncThreadSafe(IList<AsyncLogEventInfo> logEvents)
+        {
+            base.WriteAsyncThreadSafe(logEvents);
         }
 
         public bool Subscribe(IWebSocket con) => _distributor.TryAddWebSocketToPool(con);

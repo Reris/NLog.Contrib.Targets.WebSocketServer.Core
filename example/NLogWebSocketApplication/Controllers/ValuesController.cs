@@ -12,12 +12,17 @@ namespace NLogWebSocketApplication.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        public ILogger Logger { get; set; }
+        private readonly ILogger _logger;
+
+        public ValuesController(ILogger logger)
+        {
+            _logger = logger;
+        }
 
         [HttpGet]
         public async Task<string> Get()
         {
-            Logger.LogInformation($"Get 123");
+            _logger.LogInformation($"Get 123");
             return "123";
         }
     }
