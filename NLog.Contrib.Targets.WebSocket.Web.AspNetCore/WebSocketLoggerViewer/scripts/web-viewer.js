@@ -4,7 +4,7 @@
 
     $scope.numberOfLines = 50;
     $scope.newSoureColor = '#FFFFFF';
-    $scope.newSource = location.protocol.replace('http', 'ws') + location.host + location.pathname.replace('viewer/index.html', 'listen').replace('viewer', 'listen');
+    $scope.newSource = location.protocol.replace('http', 'ws') + "//" + location.host + location.pathname.replace('viewer/index.html', 'listen').replace('viewer', 'listen');
     $scope.paused = false;
 
     var sourceCount = 1;

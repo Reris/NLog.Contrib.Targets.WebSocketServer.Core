@@ -4,8 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>Samuel Su</Authors>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>1.0.3</Version>
-    <PackageReleaseNotes>Support AsyncWrapperTarget</PackageReleaseNotes>
+    <Version>1.0.4</Version>
+    <PackageReleaseNotes>Fix source url bug</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
