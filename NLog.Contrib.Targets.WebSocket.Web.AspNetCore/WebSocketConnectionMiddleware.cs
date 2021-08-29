@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Owin.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -13,26 +15,33 @@ namespace NLog.Contrib.Targets.WebSocket.Web.AspNetCore
     public class WebSocketConnectionMiddleware<T> : IMiddleware
         where T : WebSocketConnection
     {
-        private readonly Regex mMatchPattern;
+        //private readonly Regex mMatchPattern;
         private readonly IServiceProvider _serviceProvider;
+        //private readonly string _pathPrefix;
 
         private static readonly string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+        private readonly LoggerViewerOptions _loggerViewerOptions;
 
         public WebSocketConnectionMiddleware(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
+
+            _loggerViewerOptions = serviceProvider.GetRequiredService<IOptionsMonitor<LoggerViewerOptions>>().Get(typeof(WebSocketConnectionMiddleware<>).Name);
         }
 
-        public WebSocketConnectionMiddleware(IServiceProvider serviceProvider,
-            Regex matchPattern)
-            : this(serviceProvider)
-        {
-            mMatchPattern = matchPattern;
-        }
+        //public WebSocketConnectionMiddleware(IServiceProvider serviceProvider,
+        //    string pathPrefix)
+        //    : this(serviceProvider)
+        //{
+        //    _pathPrefix = pathPrefix;
+        //}
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var requestPath = context.Request.Path.Value;
+            var requestPath = !string.IsNullOrWhiteSpace(_loggerViewerOptions?.RootPath)
+                ? context.Request.Path.Value.Replace(_loggerViewerOptions.RootPath, string.Empty, StringComparison.OrdinalIgnoreCase)
+                : context.Request.Path.Value;
             if (!requestPath.StartsWith(Constants.PATH_WSLOGGER, StringComparison.OrdinalIgnoreCase))
             {
                 await next(context);

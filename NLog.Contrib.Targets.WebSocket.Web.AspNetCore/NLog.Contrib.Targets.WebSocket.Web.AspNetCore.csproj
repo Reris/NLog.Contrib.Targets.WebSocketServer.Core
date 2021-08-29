@@ -4,8 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>Samuel Su</Authors>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>1.0.4</Version>
-    <PackageReleaseNotes>Fix source url bug</PackageReleaseNotes>
+    <Version>1.0.5</Version>
+    <PackageReleaseNotes>Compatible with url rewrite.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

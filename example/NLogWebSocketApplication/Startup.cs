@@ -25,7 +25,7 @@ namespace NLogWebSocketApplication
         {
             services.AddControllers();
 
-            services.AddNLogTargetWebSocket();
+            services.AddNLogTargetWebSocket(opt => { opt.RootPath = "/root"; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
