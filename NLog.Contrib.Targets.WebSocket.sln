@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ng-websocket-log-viewer", "ng-websocket-log-viewer", "{4EF1EA01-0D0F-428B-909D-B1203BD153D1}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,7 +14,7 @@ EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebViewer", "http://localhost:45827", "{3DF51BF5-BE51-4491-864F-B1C184218D33}"
 	ProjectSection(WebsiteProperties) = preProject
 		UseIISExpress = "true"
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.1"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_45827"
 		Debug.AspNetCompiler.PhysicalPath = "example\WebViewer\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_45827\"
@@ -33,13 +33,6 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebViewer", "http://localho
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{98F2CC5D-3B99-433D-A03E-9F22E00692FC}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Owin.WebSocket.Abstractions", "Owin.WebSocket.Abstractions\Owin.WebSocket.Abstractions.csproj", "{6B270A71-67A2-432A-8AAC-C6CF2C7E561B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.Contrib.Targets.WebSocket", "NLog.Contrib.Targets.WebSocket\NLog.Contrib.Targets.WebSocket.csproj", "{50196B0D-BDA1-44CC-8E03-9603979DCAF9}"
@@ -47,6 +40,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.Contrib.Targets.WebSocket.Web.AspNetCore", "NLog.Contrib.Targets.WebSocket.Web.AspNetCore\NLog.Contrib.Targets.WebSocket.Web.AspNetCore.csproj", "{E0E9E3D0-6150-4AD2-9070-FC2260340CBA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLogWebSocketApplication", "example\NLogWebSocketApplication\NLogWebSocketApplication.csproj", "{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.WebSocket.Host", "NLog.WebSocket.Host\NLog.WebSocket.Host.csproj", "{A6FF29A7-397B-46B3-AEAA-AB489A94234B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +69,10 @@ Global
 		{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6FF29A7-397B-46B3-AEAA-AB489A94234B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6FF29A7-397B-46B3-AEAA-AB489A94234B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6FF29A7-397B-46B3-AEAA-AB489A94234B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6FF29A7-397B-46B3-AEAA-AB489A94234B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +80,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3DF51BF5-BE51-4491-864F-B1C184218D33} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
 		{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
+		{A6FF29A7-397B-46B3-AEAA-AB489A94234B} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {81808C6C-F597-4F4B-8BCE-8459784158A0}
