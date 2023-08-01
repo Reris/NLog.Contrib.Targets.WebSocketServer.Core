@@ -3,45 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ng-websocket-log-viewer", "ng-websocket-log-viewer", "{4EF1EA01-0D0F-428B-909D-B1203BD153D1}"
-	ProjectSection(SolutionItems) = preProject
-		ng-websocket-log-viewer\ng-websocket-log-viewer-1.0.0.css = ng-websocket-log-viewer\ng-websocket-log-viewer-1.0.0.css
-		ng-websocket-log-viewer\ng-websocket-log-viewer-1.0.0.js = ng-websocket-log-viewer\ng-websocket-log-viewer-1.0.0.js
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example", "example", "{C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebViewer", "http://localhost:45827", "{3DF51BF5-BE51-4491-864F-B1C184218D33}"
-	ProjectSection(WebsiteProperties) = preProject
-		UseIISExpress = "true"
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_45827"
-		Debug.AspNetCompiler.PhysicalPath = "example\WebViewer\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_45827\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_45827"
-		Release.AspNetCompiler.PhysicalPath = "example\WebViewer\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_45827\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		SlnRelativePath = "example\WebViewer\"
-		DefaultWebSiteLanguage = "Visual C#"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".SolutionItems", ".SolutionItems", "{B38A3EA8-2633-4EE5-B8D5-6124EDA17726}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		LICENSE = LICENSE
+		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Owin.WebSocket.Abstractions", "Owin.WebSocket.Abstractions\Owin.WebSocket.Abstractions.csproj", "{6B270A71-67A2-432A-8AAC-C6CF2C7E561B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.Contrib.Targets.WebSocketServer", "NLog.Contrib.Targets.WebSocketServer\NLog.Contrib.Targets.WebSocketServer.csproj", "{3D747C08-4088-450E-BF34-275B6CE38778}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.Contrib.Targets.WebSocket", "NLog.Contrib.Targets.WebSocket\NLog.Contrib.Targets.WebSocket.csproj", "{50196B0D-BDA1-44CC-8E03-9603979DCAF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.WebSocketServer.Example.Full", "NLog.WebSocketServer.Example.Full\NLog.WebSocketServer.Example.Full.csproj", "{4950D041-EAEA-44FF-B4AF-62996DDAE0B8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.Contrib.Targets.WebSocket.Web.AspNetCore", "NLog.Contrib.Targets.WebSocket.Web.AspNetCore\NLog.Contrib.Targets.WebSocket.Web.AspNetCore.csproj", "{E0E9E3D0-6150-4AD2-9070-FC2260340CBA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLogWebSocketApplication", "example\NLogWebSocketApplication\NLogWebSocketApplication.csproj", "{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.WebSocket.Host", "NLog.WebSocket.Host\NLog.WebSocket.Host.csproj", "{A6FF29A7-397B-46B3-AEAA-AB489A94234B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.WebSocketServer.Example.Slim", "NLog.WebSocketServer.Example.Slim\NLog.WebSocketServer.Example.Slim.csproj", "{94180199-8C98-46C9-9AF9-E426A1DB4BD5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,38 +26,25 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3DF51BF5-BE51-4491-864F-B1C184218D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3DF51BF5-BE51-4491-864F-B1C184218D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3DF51BF5-BE51-4491-864F-B1C184218D33}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{3DF51BF5-BE51-4491-864F-B1C184218D33}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{6B270A71-67A2-432A-8AAC-C6CF2C7E561B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6B270A71-67A2-432A-8AAC-C6CF2C7E561B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6B270A71-67A2-432A-8AAC-C6CF2C7E561B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6B270A71-67A2-432A-8AAC-C6CF2C7E561B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{50196B0D-BDA1-44CC-8E03-9603979DCAF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50196B0D-BDA1-44CC-8E03-9603979DCAF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50196B0D-BDA1-44CC-8E03-9603979DCAF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50196B0D-BDA1-44CC-8E03-9603979DCAF9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E0E9E3D0-6150-4AD2-9070-FC2260340CBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E0E9E3D0-6150-4AD2-9070-FC2260340CBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E0E9E3D0-6150-4AD2-9070-FC2260340CBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E0E9E3D0-6150-4AD2-9070-FC2260340CBA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A6FF29A7-397B-46B3-AEAA-AB489A94234B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A6FF29A7-397B-46B3-AEAA-AB489A94234B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A6FF29A7-397B-46B3-AEAA-AB489A94234B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A6FF29A7-397B-46B3-AEAA-AB489A94234B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D747C08-4088-450E-BF34-275B6CE38778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D747C08-4088-450E-BF34-275B6CE38778}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D747C08-4088-450E-BF34-275B6CE38778}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D747C08-4088-450E-BF34-275B6CE38778}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4950D041-EAEA-44FF-B4AF-62996DDAE0B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4950D041-EAEA-44FF-B4AF-62996DDAE0B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4950D041-EAEA-44FF-B4AF-62996DDAE0B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4950D041-EAEA-44FF-B4AF-62996DDAE0B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94180199-8C98-46C9-9AF9-E426A1DB4BD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94180199-8C98-46C9-9AF9-E426A1DB4BD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94180199-8C98-46C9-9AF9-E426A1DB4BD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94180199-8C98-46C9-9AF9-E426A1DB4BD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{3DF51BF5-BE51-4491-864F-B1C184218D33} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
-		{077ECEEF-6B5F-43C4-9D33-714BCC8FBC3B} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
-		{A6FF29A7-397B-46B3-AEAA-AB489A94234B} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
+		{4950D041-EAEA-44FF-B4AF-62996DDAE0B8} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
+		{94180199-8C98-46C9-9AF9-E426A1DB4BD5} = {C8A5C1B2-CD55-4B68-883C-9AD0CFC31AE5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {81808C6C-F597-4F4B-8BCE-8459784158A0}

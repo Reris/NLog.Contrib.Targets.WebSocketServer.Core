@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <AssemblyName>NLog.Contrib.Targets.WebSocketServer</AssemblyName>
+    <RootNamespace>NLog.Contrib.Targets.WebSocketServer</RootNamespace>
+    <OutputType>Library</OutputType>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ViewerSpa\angular.min.js" />
+    <None Remove="ViewerSpa\index.html" />
+    <None Remove="ViewerSpa\ng-websocket-log-viewer-1.0.0.css" />
+    <None Remove="ViewerSpa\ng-websocket-log-viewer-1.0.0.js" />
+    <None Remove="ViewerSpa\web-viewer.css" />
+    <None Remove="ViewerSpa\web-viewer.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ViewerSpa\angular.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewerSpa\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInPackage>false</IncludeInPackage>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewerSpa\ng-websocket-log-viewer-1.0.0.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewerSpa\ng-websocket-log-viewer-1.0.0.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewerSpa\web-viewer.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewerSpa\web-viewer.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NLog" Version="5.2.2" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="7.0.0" />
+  </ItemGroup>
+
+</Project>
