@@ -2,7 +2,7 @@
 
 namespace NLog.Contrib.Targets.WebSocketServer;
 
-public interface IWebSocketWrapper
+public interface IWebSocketClient
 {
     IWebSocket WebSocket { get; }
     Regex? Expression { get; set; }

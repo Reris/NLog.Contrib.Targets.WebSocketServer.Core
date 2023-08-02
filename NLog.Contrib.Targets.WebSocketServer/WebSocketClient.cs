@@ -2,9 +2,9 @@
 
 namespace NLog.Contrib.Targets.WebSocketServer;
 
-public class WebSocketWrapper : IWebSocketWrapper
+public class WebSocketClient : IWebSocketClient
 {
-    public WebSocketWrapper(IWebSocket webSocket)
+    public WebSocketClient(IWebSocket webSocket)
     {
         this.WebSocket = webSocket;
     }

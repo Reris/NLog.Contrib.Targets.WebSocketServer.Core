@@ -17,7 +17,7 @@ public class LogEntryDistributor : IDisposable
     private readonly CancellationTokenSource _cts;
 
     private readonly ICommandHandler[] _commandHandlers;
-    private readonly List<IWebSocketWrapper> _connections;
+    private readonly List<IWebSocketClient> _connections;
     private readonly int _maxConnectedClients;
     private readonly ReaderWriterLockSlim _semaphore;
 
@@ -28,7 +28,7 @@ public class LogEntryDistributor : IDisposable
         this._maxConnectedClients = maxConnectedClients;
         this._cts = new CancellationTokenSource();
         this._block = new BufferBlock<LogEntry>(new DataflowBlockOptions { CancellationToken = this._cts.Token });
-        this._connections = new List<IWebSocketWrapper>();
+        this._connections = new List<IWebSocketClient>();
         this._semaphore = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
         this._commandHandlers = new ICommandHandler[] { new FilterCommandHandler() };
@@ -49,7 +49,7 @@ public class LogEntryDistributor : IDisposable
                 return false;
             }
 
-            var ws = new WebSocketWrapper(con);
+            var ws = new WebSocketClient(con);
             this._connections.Add(ws);
             return true;
         }
@@ -98,7 +98,7 @@ public class LogEntryDistributor : IDisposable
         }
     }
 
-    private void SendLogEntry(IWebSocketWrapper ws, LogEntry logEntry)
+    private void SendLogEntry(IWebSocketClient ws, LogEntry logEntry)
     {
         try
         {
@@ -148,13 +148,13 @@ public class LogEntryDistributor : IDisposable
         return Task.CompletedTask;
     }
 
-    private void HandleCommand(string commandName, JObject json, IWebSocketWrapper wsWrapper)
+    private void HandleCommand(string commandName, JObject json, IWebSocketClient wsClient)
     {
         try
         {
             foreach (var handler in this._commandHandlers.Where(h => h.CanHandle(commandName)))
             {
-                handler.Handle(json, wsWrapper);
+                handler.Handle(json, wsClient);
             }
         }
         catch

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NLog.Targets;
 
 namespace NLog.Contrib.Targets.WebSocketServer;
@@ -10,9 +9,17 @@ public class WebSocketTarget : TargetWithLayout
     private LogEntryDistributor? _distributor;
     private bool _enabled;
 
-    public bool ThrowExceptionIfSetupFails { get; set; } = true;
+    /// <summary>
+    /// By default NLog.Contrib.Targets.WebSocketServerTarget will fail silently if does not succeed trying to set up the websocket server
+    /// (e.g.: because the port is already in use), and it will be automatically disabled. In production you may not want the application to crash because
+    /// one of your targets failed, but during development you would like to get an exception indicatig the issue.
+    /// </summary>
+    public bool ThrowExceptionIfSetupFails { get; set; }
+
+    /// <summary>
+    /// The maximum number of allowed connections. By default 100.
+    /// </summary>
     public int MaxConnectedClients { get; set; } = 100;
-    public TimeSpan ClientTimeOut { get; set; } = TimeSpan.FromSeconds(5);
 
     protected override void InitializeTarget()
     {
