@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "NLog.WebSocket.Host": {
+    "NLog.WebSocketServer.Example.Full": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -23,15 +23,12 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "allowedCommonJsDependencies": [
-              "oidc-client"
-            ],
+            "allowedCommonJsDependencies": [],
             "assets": [
               "src/assets"
             ],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -72,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "NLog.WebSocket.Host:build:production"
+              "browserTarget": "NLog.WebSocketServer.Example.Full:build:production"
             },
             "development": {
-              "browserTarget": "NLog.WebSocket.Host:build:development",
+              "browserTarget": "NLog.WebSocketServer.Example.Full:build:development",
               "proxyConfig": "proxy.conf.js"
             }
           },
@@ -84,7 +81,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "NLog.WebSocket.Host:build"
+            "browserTarget": "NLog.WebSocketServer.Example.Full:build"
           }
         },
         "test": {
@@ -98,7 +95,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "scripts": []
           }

@@ -5,6 +5,7 @@
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <SpaDist>wwwdist\</SpaDist>
+    <SlimDist>..\NLog.WebSocketServer.Example.Slim\wwwroot</SlimDist>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -31,10 +32,6 @@
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**;$(SpaRoot).angular\**;$(SpaRoot)dist\**" />
   </ItemGroup>
 
-  <Target Name="ClearDist" BeforeTargets="Build">
-    <RemoveDir Directories="$(SpaDist)" />
-  </Target>
-
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
@@ -54,7 +51,11 @@
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
     </ItemGroup>
+
+    <RemoveDir Directories="$(SpaDist)" />
+    <RemoveDir Directories="$(SlimDist)" />
     <Copy SourceFiles="@(DistFiles)" DestinationFolder="$(SpaDist)" ContinueOnError="false" />
+    <Copy SourceFiles="@(DistFiles)" DestinationFolder="$(SlimDist)" ContinueOnError="false" />
   </Target>
 
   <ItemGroup>
