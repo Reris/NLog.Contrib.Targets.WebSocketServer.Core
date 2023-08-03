@@ -19,6 +19,7 @@ indent_style=space
 indent_size=2
 tab_width=2
 quote_type=double
+insert_final_newline = true
 ij_typescript_align_imports = false
 ij_typescript_align_multiline_array_initializer_expression = true
 ij_typescript_align_multiline_binary_operation = false
