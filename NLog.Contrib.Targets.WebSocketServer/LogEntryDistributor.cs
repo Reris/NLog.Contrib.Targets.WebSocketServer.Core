@@ -14,10 +14,10 @@ namespace NLog.Contrib.Targets.WebSocketServer;
 public class LogEntryDistributor : IDisposable
 {
     private readonly BufferBlock<LogEntry> _block;
-    private readonly CancellationTokenSource _cts;
 
     private readonly ICommandHandler[] _commandHandlers;
     private readonly List<IWebSocketClient> _connections;
+    private readonly CancellationTokenSource _cts;
     private readonly int _maxConnectedClients;
     private readonly ReaderWriterLockSlim _semaphore;
 
@@ -68,13 +68,11 @@ public class LogEntryDistributor : IDisposable
         }
     }
 
-    private long GetTimestamp(DateTime dateTime) => long.Parse(dateTime.ToString("yyyyMMddHHmmssff"));
-
     public void Broadcast(string logline, DateTime timestamp)
     {
         if (!this._cts.IsCancellationRequested)
         {
-            this._block.Post(new LogEntry(this.GetTimestamp(timestamp), logline));
+            this._block.Post(new LogEntry(logline));
         }
     }
 
@@ -102,7 +100,7 @@ public class LogEntryDistributor : IDisposable
     {
         try
         {
-            if (ws.Expression is not null && !ws.Expression.IsMatch(logEntry.Line))
+            if (ws.Expression is not null && !ws.Expression.IsMatch(logEntry.Entry))
             {
                 return;
             }

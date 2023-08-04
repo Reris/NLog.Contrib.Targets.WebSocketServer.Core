@@ -1,0 +1,30 @@
+:host {
+  display: block;
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+  background-color: #333;
+  border-bottom: 1px solid #AAA;
+  white-space: nowrap;
+
+  input, button, label {
+    margin: var(--margin);
+  }
+}
+
+#maxRows {
+  width: 4em;
+}
+
+a {
+  text-decoration: none;
+  padding: 10px;
+
+  &:hover {
+    background: #606266;
+  }
+}

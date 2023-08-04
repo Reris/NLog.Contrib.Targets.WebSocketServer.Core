@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".SolutionItems", ".Solution
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
+		NLog.Contrib.Targets.WebSocket.sln.DotSettings = NLog.Contrib.Targets.WebSocket.sln.DotSettings
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -18,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.Contrib.Targets.WebSoc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.WebSocketServer.Example.Full", "NLog.WebSocketServer.Example.Full\NLog.WebSocketServer.Example.Full.csproj", "{4950D041-EAEA-44FF-B4AF-62996DDAE0B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.WebSocketServer.Example.Slim", "NLog.WebSocketServer.Example.Slim\NLog.WebSocketServer.Example.Slim.csproj", "{94180199-8C98-46C9-9AF9-E426A1DB4BD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.WebSocketServer.Example.Slim", "NLog.WebSocketServer.Example.Slim\NLog.WebSocketServer.Example.Slim.csproj", "{94180199-8C98-46C9-9AF9-E426A1DB4BD5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

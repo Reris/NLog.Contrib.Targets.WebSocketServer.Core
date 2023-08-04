@@ -1,20 +1,45 @@
 /* You can add global styles to this file, and also import other style files */
+@import "styles/_index.scss";
 
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
+:root {
+  --margin: 5px;
+  --padding: 5px;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+* {
+  box-sizing: border-box;
 }
 
-code {
-  color: #e01a76;
-}
-
-.btn-primary {
+/* Provide sufficient contrast against dark background */
+body {
+  margin: 0;
+  background-color: #222426;
   color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+  font-family: 'Segoe UI';
+}
+
+input {
+  border: 1px solid #444;
+  border-radius: 4px;
+  margin: 0 var(--margin);
+  line-height: 20px;
+  vertical-align: text-top;
+
+  &[type=number] {
+    text-align: end;
+  }
+
+  &[type=color] {
+    height: 24px;
+    width: 24px;
+  }
+}
+
+button {
+  padding: var(--padding);
+  border-radius: 3px;
+}
+
+.container {
+  margin: 16px;
 }

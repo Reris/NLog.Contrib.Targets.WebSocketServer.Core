@@ -1,10 +1,12 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using NLog;
 using NLog.Contrib.Targets.WebSocketServer;
 using NLog.Web;
 
@@ -48,4 +50,17 @@ app.MapControllerRoute(
 
 app.MapFallbackToFile("index.html");
 
+LogTicker();
+
 app.Run();
+
+static async void LogTicker()
+{
+    var i = 0;
+    var logger = LogManager.GetCurrentClassLogger();
+    while (true)
+    {
+        logger.Info("Log tick {Tick}", ++i);
+        await Task.Delay(TimeSpan.FromSeconds(5));
+    }
+}

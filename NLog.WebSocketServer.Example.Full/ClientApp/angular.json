@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "NLog.WebSocketServer.Example.Full": {
+    "app": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "NLog.WebSocketServer.Example.Full:build:production"
+              "browserTarget": "app:build:production"
             },
             "development": {
-              "browserTarget": "NLog.WebSocketServer.Example.Full:build:development",
+              "browserTarget": "app:build:development",
               "proxyConfig": "proxy.conf.js"
             }
           },
@@ -81,7 +81,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "NLog.WebSocketServer.Example.Full:build"
+            "browserTarget": "app:build"
           }
         },
         "test": {
@@ -129,6 +129,13 @@
           }
         }
       }
+    }
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "style": "scss",
+      "standalone": true,
+      "changeDetection": "OnPush"
     }
   }
 }
