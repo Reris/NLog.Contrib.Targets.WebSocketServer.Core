@@ -13,7 +13,8 @@ if (environment.production) {
   enableProdMode();
 }
 
-bootstrapApplication(AppComponent,
+bootstrapApplication(
+  AppComponent,
   {
     providers: [
       { provide: "BASE_URL", useFactory: getBaseUrl },

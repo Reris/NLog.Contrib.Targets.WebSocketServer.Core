@@ -105,7 +105,7 @@ public class LogEntryDistributor : IDisposable
                 return;
             }
 
-            
+
             ws.WebSocket.SendText(
                 new ArraySegment<byte>(JsonSerializer.SerializeToUtf8Bytes(logEntry, LogEntryDistributor.SerializerOptions)),
                 true,

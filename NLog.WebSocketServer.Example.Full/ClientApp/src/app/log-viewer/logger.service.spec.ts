@@ -2,7 +2,8 @@ import { TestBed } from "@angular/core/testing";
 
 import { LoggerService } from "./logger.service";
 
-describe("LoggerService",
+describe(
+  "LoggerService",
   () => {
     let service: LoggerService;
 
@@ -11,7 +12,8 @@ describe("LoggerService",
       service = TestBed.inject(LoggerService);
     });
 
-    it("should be created",
+    it(
+      "should be created",
       () => {
         expect(service).toBeTruthy();
       });

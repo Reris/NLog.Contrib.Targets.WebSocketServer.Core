@@ -27,7 +27,7 @@ public class WebSocketConnectionMiddleware<T> : IMiddleware
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        var requestPath = context.Request.Path.Value ?? string.Empty;
+        var requestPath = context.Request.Path.Value?.TrimEnd('/') ?? string.Empty;
         requestPath = !string.IsNullOrWhiteSpace(this._logViewerOptions.RootPath)
                           ? requestPath.Replace(this._logViewerOptions.RootPath, string.Empty, StringComparison.OrdinalIgnoreCase)
                           : requestPath;
@@ -49,7 +49,7 @@ public class WebSocketConnectionMiddleware<T> : IMiddleware
                     return;
                 }
 
-                await EmbeddedFileController.RespondAsync("ViewerSpa", context, requestPath);
+                await EmbeddedFileController.RespondAsync("ViewerSpa", context, requestPath, this._logViewerOptions.ViewerIndex);
             }
             catch (FileNotFoundException)
             {

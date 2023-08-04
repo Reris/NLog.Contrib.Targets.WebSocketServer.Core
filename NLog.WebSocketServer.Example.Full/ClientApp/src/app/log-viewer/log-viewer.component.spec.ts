@@ -2,7 +2,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { LogViewerComponent } from "./log-viewer.component";
 
-describe("LogViewerComponent",
+describe(
+  "LogViewerComponent",
   () => {
     let component: LogViewerComponent;
     let fixture: ComponentFixture<LogViewerComponent>;
@@ -16,7 +17,8 @@ describe("LogViewerComponent",
       fixture.detectChanges();
     });
 
-    it("should create",
+    it(
+      "should create",
       () => {
         expect(component).toBeTruthy();
       });

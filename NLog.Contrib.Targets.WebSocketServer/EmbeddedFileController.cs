@@ -16,20 +16,28 @@ public class EmbeddedFileController
         (".css", "text/css; charset=utf-8")
     };
 
-    public static async Task RespondAsync(string embeddedFolder, HttpContext context, string requestPath)
+    public static async Task RespondAsync(string embeddedFolder, HttpContext context, string requestPath, string indexHtml)
     {
         var resourceSuffix = requestPath.Split('/').Last();
         var contentType = EmbeddedFileController.ContentTypes.FirstOrDefault(a => requestPath.EndsWith(a.File)).Mime
                           ?? throw new FileNotFoundException();
 
-        var resourseId = $"{typeof(EmbeddedFileController).Namespace}.{embeddedFolder}.{resourceSuffix}";
+        var resourceId = $"{typeof(EmbeddedFileController).Namespace}.{embeddedFolder}.{resourceSuffix}";
 
         try
         {
-            await using var stream = typeof(EmbeddedFileController).Assembly.GetManifestResourceStream(resourseId) ?? throw new FileNotFoundException();
+            await using var stream = typeof(EmbeddedFileController).Assembly.GetManifestResourceStream(resourceId) ?? throw new FileNotFoundException();
             using var sr = new StreamReader(stream);
             var content = await sr.ReadToEndAsync();
             context.Response.ContentType = contentType;
+            if (string.Equals("/" + resourceSuffix, indexHtml, StringComparison.OrdinalIgnoreCase))
+            {
+                content = content.Replace(
+                    @"<base href=""/"">",
+                    $@"<base href=""{requestPath.Remove(requestPath.Length - indexHtml.Length)}/"">",
+                    StringComparison.OrdinalIgnoreCase);
+            }
+
             await context.Response.WriteAsync(content, Encoding.UTF8);
         }
         catch (Exception ex)
