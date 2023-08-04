@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
 
 namespace NLog.Contrib.Targets.WebSocketServer.CommandHandlers;
 
@@ -8,14 +8,11 @@ public class FilterCommandHandler : ICommandHandler
 {
     public bool CanHandle(string commandName) => string.Equals("filter", commandName, StringComparison.OrdinalIgnoreCase);
 
-    public void Handle(JObject command, IWebSocketClient wswrapper)
+    public void Handle(JsonObject command, IWebSocketClient wswrapper)
     {
-        var expression = command.Property("filter");
-        if (expression is null || expression.Value is null)
+        if (command.TryGetPropertyValue("filter", out var node) && node?.GetValue<string>() is { } filter)
         {
-            return;
+            wswrapper.Expression = new Regex(filter);
         }
-
-        wswrapper.Expression = new Regex(expression.Value.ToString());
     }
 }

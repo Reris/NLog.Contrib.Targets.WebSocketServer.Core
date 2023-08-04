@@ -35,7 +35,7 @@ export class LogViewerComponent implements AfterViewInit, OnDestroy {
   private onMessage(msg: IMessage): void {
     const element = this._renderer.createElement("div") as HTMLElement;
     element.classList.add(msg.type + "Row");
-    const text = this._renderer.createText(msg.content["Entry"] ?? msg.content as string);
+    const text = this._renderer.createText(msg.content["entry"] ?? msg.content as string);
     this._renderer.appendChild(element, text);
     this._renderer.appendChild(this._messages!.nativeElement, element);
     if (this.getSelectedText() == "") {

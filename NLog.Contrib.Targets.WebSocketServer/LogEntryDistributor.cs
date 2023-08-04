@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NLog.Contrib.Targets.WebSocketServer.CommandHandlers;
 
 namespace NLog.Contrib.Targets.WebSocketServer;
 
 public class LogEntryDistributor : IDisposable
 {
+    private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web);
     private readonly BufferBlock<LogEntry> _block;
 
     private readonly ICommandHandler[] _commandHandlers;
@@ -105,7 +105,11 @@ public class LogEntryDistributor : IDisposable
                 return;
             }
 
-            ws.WebSocket.SendText(new ArraySegment<byte>(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(logEntry))), true, this._cts.Token);
+            
+            ws.WebSocket.SendText(
+                new ArraySegment<byte>(JsonSerializer.SerializeToUtf8Bytes(logEntry, LogEntryDistributor.SerializerOptions)),
+                true,
+                this._cts.Token);
         }
         catch
         {
@@ -122,10 +126,10 @@ public class LogEntryDistributor : IDisposable
                 return Task.CompletedTask;
             }
 
-            var json = JObject.Parse(message);
-            var command = json.Property("command");
+            var json = JsonNode.Parse(message)?.AsObject();
+            var command = json?["command"];
 
-            if (command?.Value is null)
+            if (json is null || command is null)
             {
                 return Task.CompletedTask;
             }
@@ -136,7 +140,7 @@ public class LogEntryDistributor : IDisposable
                 return Task.CompletedTask;
             }
 
-            this.HandleCommand(command.Value.ToString(), json, socket);
+            this.HandleCommand(command.GetValue<string>(), json, socket);
         }
         catch
         {
@@ -146,7 +150,7 @@ public class LogEntryDistributor : IDisposable
         return Task.CompletedTask;
     }
 
-    private void HandleCommand(string commandName, JObject json, IWebSocketClient wsClient)
+    private void HandleCommand(string commandName, JsonObject json, IWebSocketClient wsClient)
     {
         try
         {
