@@ -21,6 +21,7 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
+.angular/
 
 # Visual Studo 2015 cache/options directory
 .vs/
@@ -89,6 +90,9 @@ $tf/
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
+
+# IdeaJ & Rider IDE
+.idea
 
 # JustCode is a .NET coding addin-in
 .JustCode

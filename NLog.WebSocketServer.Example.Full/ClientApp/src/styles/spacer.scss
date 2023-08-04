@@ -1,0 +1,15 @@
+﻿.spacer-row {
+  display: flex;
+  align-items: baseline;
+  width: 100%;
+}
+
+.spacer-col {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+}
+
+.spacer {
+  flex-grow: 1;
+}
