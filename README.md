@@ -59,10 +59,10 @@ Configure `NLog.Contrib.Targets.WebsocketServer` as a new target.
 The WebSocket server broadcast JSON objects like this:
 ```json
 {
-   "Entry":"2015-07-16 21:55:38.2576|INFO||This is information."
+   "entry":"2015-07-16 21:55:38.2576|INFO||This is information."
 }
 ```
- * `Entry` : The actual formatted log entry.
+ * `entry` : The actual formatted log entry.
 
 ## Input
 The component accepts JSON commands to request special behaviours.
