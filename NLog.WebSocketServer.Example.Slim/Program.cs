@@ -1,4 +1,4 @@
-using NLog.Contrib.Targets.WebSocketServer;
+using NLog.Contrib.Targets.WebSocketServer.Core;
 using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);

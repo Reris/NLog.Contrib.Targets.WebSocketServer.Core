@@ -2,7 +2,7 @@
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
-namespace NLog.Contrib.Targets.WebSocketServer.CommandHandlers;
+namespace NLog.Contrib.Targets.WebSocketServer.Core.CommandHandlers;
 
 public class FilterCommandHandler : ICommandHandler
 {

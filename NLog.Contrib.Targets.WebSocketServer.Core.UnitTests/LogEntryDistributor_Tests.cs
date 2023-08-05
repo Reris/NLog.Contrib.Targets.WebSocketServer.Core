@@ -7,7 +7,7 @@ using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace NLog.Contrib.Targets.WebSocketServer.UnitTests;
+namespace NLog.Contrib.Targets.WebSocketServer.Core.UnitTests;
 
 public class LogEntryDistributor_Tests
 {

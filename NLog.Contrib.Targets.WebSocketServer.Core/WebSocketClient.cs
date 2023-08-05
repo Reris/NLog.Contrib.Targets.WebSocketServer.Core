@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace NLog.Contrib.Targets.WebSocketServer;
+namespace NLog.Contrib.Targets.WebSocketServer.Core;
 
 public class WebSocketClient
 {

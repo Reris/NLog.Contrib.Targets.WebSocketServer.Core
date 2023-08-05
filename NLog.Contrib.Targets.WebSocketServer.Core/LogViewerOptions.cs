@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 
-namespace NLog.Contrib.Targets.WebSocketServer;
+namespace NLog.Contrib.Targets.WebSocketServer.Core;
 
 [PublicAPI]
 public class LogViewerOptions

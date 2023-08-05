@@ -6,9 +6,9 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using NLog.Contrib.Targets.WebSocketServer.CommandHandlers;
+using NLog.Contrib.Targets.WebSocketServer.Core.CommandHandlers;
 
-namespace NLog.Contrib.Targets.WebSocketServer;
+namespace NLog.Contrib.Targets.WebSocketServer.Core;
 
 public class LogEntryDistributor : IDisposable
 {

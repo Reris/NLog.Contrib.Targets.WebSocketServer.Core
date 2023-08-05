@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
-namespace NLog.Contrib.Targets.WebSocketServer.UnitTests;
+namespace NLog.Contrib.Targets.WebSocketServer.Core.UnitTests;
 
 public class EmbeddedFileHelper_Tests
 {

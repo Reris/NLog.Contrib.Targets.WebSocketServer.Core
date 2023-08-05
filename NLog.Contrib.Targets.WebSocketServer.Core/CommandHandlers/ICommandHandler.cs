@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 
-namespace NLog.Contrib.Targets.WebSocketServer.CommandHandlers;
+namespace NLog.Contrib.Targets.WebSocketServer.Core.CommandHandlers;
 
 public interface ICommandHandler
 {

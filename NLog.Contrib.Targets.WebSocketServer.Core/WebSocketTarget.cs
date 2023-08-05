@@ -2,10 +2,10 @@
 using JetBrains.Annotations;
 using NLog.Targets;
 
-namespace NLog.Contrib.Targets.WebSocketServer;
+namespace NLog.Contrib.Targets.WebSocketServer.Core;
 
 [PublicAPI]
-[Target("NLog.Contrib.Targets.WebSocketServer")]
+[Target("NLog.Contrib.Targets.WebSocketServer.Core")]
 public class WebSocketTarget : TargetWithLayout
 {
     private LogEntryDistributor? _distributor;

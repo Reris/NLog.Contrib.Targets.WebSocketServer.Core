@@ -2,9 +2,9 @@
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
-using static NLog.Contrib.Targets.WebSocketServer.IWebSocket;
+using static NLog.Contrib.Targets.WebSocketServer.Core.IWebSocket;
 
-namespace NLog.Contrib.Targets.WebSocketServer.Adapters;
+namespace NLog.Contrib.Targets.WebSocketServer.Core.Adapters;
 
 public class WebSocketAdapter : IWebSocket
 {

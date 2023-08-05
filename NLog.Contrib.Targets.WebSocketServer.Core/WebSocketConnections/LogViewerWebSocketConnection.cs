@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NLog.Targets.Wrappers;
 
-namespace NLog.Contrib.Targets.WebSocketServer.WebSocketConnections;
+namespace NLog.Contrib.Targets.WebSocketServer.Core.WebSocketConnections;
 
 public class LogViewerWebSocketConnection : WebSocketConnection
 {

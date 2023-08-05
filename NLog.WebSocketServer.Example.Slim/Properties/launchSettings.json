@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "NLog.WebSocketServer.Example.Slim": {
+    "Example.Slim": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

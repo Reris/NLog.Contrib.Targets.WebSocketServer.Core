@@ -11,17 +11,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".SolutionItems", ".Solution
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
-		NLog.Contrib.Targets.WebSocket.sln.DotSettings = NLog.Contrib.Targets.WebSocket.sln.DotSettings
 		README.md = README.md
+		NLog.Contrib.Targets.WebSocket.Core.sln.DotSettings = NLog.Contrib.Targets.WebSocket.Core.sln.DotSettings
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.Contrib.Targets.WebSocketServer", "NLog.Contrib.Targets.WebSocketServer\NLog.Contrib.Targets.WebSocketServer.csproj", "{3D747C08-4088-450E-BF34-275B6CE38778}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.WebSocketServer.Example.Full", "NLog.WebSocketServer.Example.Full\NLog.WebSocketServer.Example.Full.csproj", "{4950D041-EAEA-44FF-B4AF-62996DDAE0B8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.WebSocketServer.Example.Slim", "NLog.WebSocketServer.Example.Slim\NLog.WebSocketServer.Example.Slim.csproj", "{94180199-8C98-46C9-9AF9-E426A1DB4BD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.Contrib.Targets.WebSocketServer.UnitTests", "NLog.Contrib.Targets.WebSocketServer.UnitTests\NLog.Contrib.Targets.WebSocketServer.UnitTests.csproj", "{30908AD0-329E-4632-A4D4-ACD5149EAEBD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.Contrib.Targets.WebSocketServer.Core", "NLog.Contrib.Targets.WebSocketServer.Core\NLog.Contrib.Targets.WebSocketServer.Core.csproj", "{D70E73BE-6541-47CE-AB4B-EE66A63EA650}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.Contrib.Targets.WebSocketServer.Core.UnitTests", "NLog.Contrib.Targets.WebSocketServer.Core.UnitTests\NLog.Contrib.Targets.WebSocketServer.Core.UnitTests.csproj", "{F846DC08-87BC-42B8-A085-C83B1A77AD4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3D747C08-4088-450E-BF34-275B6CE38778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D747C08-4088-450E-BF34-275B6CE38778}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D747C08-4088-450E-BF34-275B6CE38778}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D747C08-4088-450E-BF34-275B6CE38778}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4950D041-EAEA-44FF-B4AF-62996DDAE0B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4950D041-EAEA-44FF-B4AF-62996DDAE0B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4950D041-EAEA-44FF-B4AF-62996DDAE0B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -41,10 +37,14 @@ Global
 		{94180199-8C98-46C9-9AF9-E426A1DB4BD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94180199-8C98-46C9-9AF9-E426A1DB4BD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94180199-8C98-46C9-9AF9-E426A1DB4BD5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{30908AD0-329E-4632-A4D4-ACD5149EAEBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{30908AD0-329E-4632-A4D4-ACD5149EAEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{30908AD0-329E-4632-A4D4-ACD5149EAEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{30908AD0-329E-4632-A4D4-ACD5149EAEBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D70E73BE-6541-47CE-AB4B-EE66A63EA650}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D70E73BE-6541-47CE-AB4B-EE66A63EA650}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D70E73BE-6541-47CE-AB4B-EE66A63EA650}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D70E73BE-6541-47CE-AB4B-EE66A63EA650}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F846DC08-87BC-42B8-A085-C83B1A77AD4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F846DC08-87BC-42B8-A085-C83B1A77AD4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F846DC08-87BC-42B8-A085-C83B1A77AD4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F846DC08-87BC-42B8-A085-C83B1A77AD4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

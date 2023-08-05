@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
-using NLog.Contrib.Targets.WebSocketServer.Adapters;
+using NLog.Contrib.Targets.WebSocketServer.Core.Adapters;
 
-namespace NLog.Contrib.Targets.WebSocketServer.WebSocketConnections;
+namespace NLog.Contrib.Targets.WebSocketServer.Core.WebSocketConnections;
 
 [PublicAPI]
 public abstract class WebSocketConnection

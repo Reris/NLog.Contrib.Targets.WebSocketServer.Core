@@ -4,9 +4,9 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using NLog.Contrib.Targets.WebSocketServer.WebSocketConnections;
+using NLog.Contrib.Targets.WebSocketServer.Core.WebSocketConnections;
 
-namespace NLog.Contrib.Targets.WebSocketServer;
+namespace NLog.Contrib.Targets.WebSocketServer.Core;
 
 [PublicAPI]
 public static class WebSocketTargetExtensions

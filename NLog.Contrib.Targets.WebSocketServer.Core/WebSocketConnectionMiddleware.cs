@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using NLog.Contrib.Targets.WebSocketServer.WebSocketConnections;
+using NLog.Contrib.Targets.WebSocketServer.Core.WebSocketConnections;
 
-namespace NLog.Contrib.Targets.WebSocketServer;
+namespace NLog.Contrib.Targets.WebSocketServer.Core;
 
 public class WebSocketConnectionMiddleware<T> : IMiddleware
     where T : WebSocketConnection

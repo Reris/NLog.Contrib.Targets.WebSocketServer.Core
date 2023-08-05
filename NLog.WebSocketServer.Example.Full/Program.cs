@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using NLog;
-using NLog.Contrib.Targets.WebSocketServer;
+using NLog.Contrib.Targets.WebSocketServer.Core;
 using NLog.Web;
 
 // ReSharper disable once ConvertToConstant.Local
