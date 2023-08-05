@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
+using JetBrains.Annotations;
 using NLog.Targets;
 
 namespace NLog.Contrib.Targets.WebSocketServer;
 
+[PublicAPI]
 [Target("NLog.Contrib.Targets.WebSocketServer")]
 public class WebSocketTarget : TargetWithLayout
 {
@@ -58,7 +60,7 @@ public class WebSocketTarget : TargetWithLayout
 
         try
         {
-            this._distributor?.Broadcast(this.Layout.Render(logEvent), logEvent.TimeStamp);
+            this._distributor?.Broadcast(this.Layout.Render(logEvent));
         }
         catch
         {
@@ -70,6 +72,6 @@ public class WebSocketTarget : TargetWithLayout
 
     public void Unsubscribe(IWebSocket con) => this._distributor?.RemoveDisconnected(con);
 
-    public Task AcceptWebSocketCommands(string message, IWebSocket webSocket)
-        => this._distributor?.AcceptWebSocketCommands(message, webSocket) ?? Task.CompletedTask;
+    public ValueTask AcceptWebSocketCommands(string message, IWebSocket webSocket)
+        => this._distributor?.AcceptWebSocketCommandsAsync(message, webSocket) ?? ValueTask.CompletedTask;
 }

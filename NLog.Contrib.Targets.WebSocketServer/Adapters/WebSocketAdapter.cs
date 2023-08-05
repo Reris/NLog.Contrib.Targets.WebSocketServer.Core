@@ -17,23 +17,27 @@ public class WebSocketAdapter : IWebSocket
         this.SequenceTask = Task.CompletedTask;
     }
 
-    public Task SequenceTask { get; private set; }
+    /// <summary>
+    /// Finish before send next
+    /// </summary>
+    private Task SequenceTask { get; set; }
+
     public WebSocketCloseStatus? CloseStatus => this._webSocket.CloseStatus;
     public string? CloseStatusDescription => this._webSocket.CloseStatusDescription;
 
-    public Task SendText(ArraySegment<byte> data, bool endOfMessage, CancellationToken cancelToken)
-        => this.Send(data, WebSocketMessageType.Text, endOfMessage, cancelToken);
+    public Task SendTextAsync(ArraySegment<byte> data, bool endOfMessage, CancellationToken cancelToken)
+        => this.SendAsync(data, WebSocketMessageType.Text, endOfMessage, cancelToken);
 
-    public Task SendBinary(ArraySegment<byte> data, bool endOfMessage, CancellationToken cancelToken)
-        => this.Send(data, WebSocketMessageType.Binary, endOfMessage, cancelToken);
+    public Task SendBinaryAsync(ArraySegment<byte> data, bool endOfMessage, CancellationToken cancelToken)
+        => this.SendAsync(data, WebSocketMessageType.Binary, endOfMessage, cancelToken);
 
-    public Task Send(ArraySegment<byte> data, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancelToken)
+    public Task SendAsync(ArraySegment<byte> data, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancelToken)
     {
         var sendContext = new MessageChunk(data, endOfMessage, messageType, cancelToken);
 
-        return this.SequenceTask = SequencedSend(this, sendContext);
+        return this.SequenceTask = SequencedSendAsync(this, sendContext);
 
-        static async Task SequencedSend(WebSocketAdapter adapter, MessageChunk msg)
+        static async Task SequencedSendAsync(WebSocketAdapter adapter, MessageChunk msg)
         {
             try
             {
@@ -47,10 +51,10 @@ public class WebSocketAdapter : IWebSocket
         }
     }
 
-    public Task Close(WebSocketCloseStatus closeStatus, string closeDescription, CancellationToken cancelToken)
+    public Task CloseAsync(WebSocketCloseStatus closeStatus, string closeDescription, CancellationToken cancelToken)
         => this._webSocket.CloseAsync(closeStatus, closeDescription, cancelToken);
 
-    public async Task<ReceivedMessage> ReceiveMessage(byte[] buffer, CancellationToken cancelToken)
+    public async Task<ReceivedMessage> ReceiveMessageAsync(byte[] buffer, CancellationToken cancelToken)
     {
         var count = 0;
         WebSocketReceiveResult result;
@@ -90,7 +94,7 @@ public class WebSocketAdapter : IWebSocket
         }
     }
 
-    public readonly struct MessageChunk
+    private readonly struct MessageChunk
     {
         public readonly ArraySegment<byte> Buffer;
         public readonly CancellationToken CancelToken;

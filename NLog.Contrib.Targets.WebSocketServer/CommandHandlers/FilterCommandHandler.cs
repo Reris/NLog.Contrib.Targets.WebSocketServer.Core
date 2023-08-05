@@ -8,11 +8,11 @@ public class FilterCommandHandler : ICommandHandler
 {
     public bool CanHandle(string commandName) => string.Equals("filter", commandName, StringComparison.OrdinalIgnoreCase);
 
-    public void Handle(JsonObject command, IWebSocketClient wswrapper)
+    public void Handle(JsonObject command, WebSocketClient client)
     {
         if (command.TryGetPropertyValue("filter", out var node) && node?.GetValue<string>() is { } filter)
         {
-            wswrapper.Expression = new Regex(filter);
+            client.Expression = new Regex(filter, RegexOptions.ECMAScript | RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);
         }
     }
 }

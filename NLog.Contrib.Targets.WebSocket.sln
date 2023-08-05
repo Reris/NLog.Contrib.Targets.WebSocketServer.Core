@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.WebSocketServer.Exampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.WebSocketServer.Example.Slim", "NLog.WebSocketServer.Example.Slim\NLog.WebSocketServer.Example.Slim.csproj", "{94180199-8C98-46C9-9AF9-E426A1DB4BD5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.Contrib.Targets.WebSocketServer.UnitTests", "NLog.Contrib.Targets.WebSocketServer.UnitTests\NLog.Contrib.Targets.WebSocketServer.UnitTests.csproj", "{30908AD0-329E-4632-A4D4-ACD5149EAEBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{94180199-8C98-46C9-9AF9-E426A1DB4BD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94180199-8C98-46C9-9AF9-E426A1DB4BD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94180199-8C98-46C9-9AF9-E426A1DB4BD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30908AD0-329E-4632-A4D4-ACD5149EAEBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30908AD0-329E-4632-A4D4-ACD5149EAEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30908AD0-329E-4632-A4D4-ACD5149EAEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30908AD0-329E-4632-A4D4-ACD5149EAEBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

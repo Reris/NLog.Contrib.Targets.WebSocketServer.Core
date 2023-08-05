@@ -3,21 +3,18 @@ using System.Net.WebSockets;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
 using NLog.Contrib.Targets.WebSocketServer.Adapters;
 
 namespace NLog.Contrib.Targets.WebSocketServer.WebSocketConnections;
 
+[PublicAPI]
 public abstract class WebSocketConnection
 {
-    private readonly CancellationTokenSource _cts;
+    private readonly CancellationTokenSource _cts = new();
     private HttpContext? _context;
     private IWebSocket? _webSocket;
-
-    protected WebSocketConnection()
-    {
-        this._cts = new CancellationTokenSource();
-    }
 
     protected IWebSocket WebSocket => this._webSocket ?? throw new NotRunningException();
 
@@ -34,7 +31,7 @@ public abstract class WebSocketConnection
     /// <summary>
     /// Closes the websocket connection
     /// </summary>
-    public Task Close(WebSocketCloseStatus status, string reason) => this.WebSocket.Close(status, reason, CancellationToken.None);
+    public Task CloseAsync(WebSocketCloseStatus status, string reason) => this.WebSocket.CloseAsync(status, reason, CancellationToken.None);
 
     /// <summary>
     /// Aborts the websocket connection
@@ -47,7 +44,7 @@ public abstract class WebSocketConnection
     /// <param name="buffer">Data to send</param>
     /// <param name="endOfMessage">End of the message?</param>
     /// <returns>Task to send the data</returns>
-    public Task SendBinary(byte[] buffer, bool endOfMessage) => this.SendBinary(new ArraySegment<byte>(buffer), endOfMessage);
+    public Task SendBinaryAsync(byte[] buffer, bool endOfMessage) => this.SendBinaryAsync(new ArraySegment<byte>(buffer), endOfMessage);
 
     /// <summary>
     /// Sends data to the client with binary message type
@@ -55,7 +52,7 @@ public abstract class WebSocketConnection
     /// <param name="buffer">Data to send</param>
     /// <param name="endOfMessage">End of the message?</param>
     /// <returns>Task to send the data</returns>
-    public Task SendBinary(ArraySegment<byte> buffer, bool endOfMessage) => this.WebSocket.SendBinary(buffer, endOfMessage, this._cts.Token);
+    public Task SendBinaryAsync(ArraySegment<byte> buffer, bool endOfMessage) => this.WebSocket.SendBinaryAsync(buffer, endOfMessage, this._cts.Token);
 
     /// <summary>
     /// Sends data to the client with the text message type
@@ -63,7 +60,7 @@ public abstract class WebSocketConnection
     /// <param name="buffer">Data to send</param>
     /// <param name="endOfMessage">End of the message?</param>
     /// <returns>Task to send the data</returns>
-    public Task SendText(byte[] buffer, bool endOfMessage) => this.SendText(new ArraySegment<byte>(buffer), endOfMessage);
+    public Task SendTextAsync(byte[] buffer, bool endOfMessage) => this.SendTextAsync(new ArraySegment<byte>(buffer), endOfMessage);
 
     /// <summary>
     /// Sends data to the client with the text message type
@@ -71,7 +68,7 @@ public abstract class WebSocketConnection
     /// <param name="buffer">Data to send</param>
     /// <param name="endOfMessage">End of the message?</param>
     /// <returns>Task to send the data</returns>
-    public Task SendText(ArraySegment<byte> buffer, bool endOfMessage) => this.WebSocket.SendText(buffer, endOfMessage, this._cts.Token);
+    public Task SendTextAsync(ArraySegment<byte> buffer, bool endOfMessage) => this.WebSocket.SendTextAsync(buffer, endOfMessage, this._cts.Token);
 
     /// <summary>
     /// Sends data to the client
@@ -80,8 +77,8 @@ public abstract class WebSocketConnection
     /// <param name="endOfMessage">End of the message?</param>
     /// <param name="type">Message type of the data</param>
     /// <returns>Task to send the data</returns>
-    public Task Send(ArraySegment<byte> buffer, bool endOfMessage, WebSocketMessageType type)
-        => this.WebSocket.Send(buffer, type, endOfMessage, this._cts.Token);
+    public Task SendAsync(ArraySegment<byte> buffer, bool endOfMessage, WebSocketMessageType type)
+        => this.WebSocket.SendAsync(buffer, type, endOfMessage, this._cts.Token);
 
     /// <summary>
     /// Verify the request
@@ -100,33 +97,19 @@ public abstract class WebSocketConnection
     /// <summary>
     /// Fires after the websocket has been opened with the client
     /// </summary>
-    public virtual void OnOpen()
-    {
-    }
-
-    /// <summary>
-    /// Fires after the websocket has been opened with the client and after OnOpen
-    /// </summary>
-    public virtual Task OnOpenAsync() => Task.Delay(0);
+    public virtual ValueTask OnOpenAsync() => ValueTask.CompletedTask;
 
     /// <summary>
     /// Fires when data is received from the client
     /// </summary>
     /// <param name="message">Data that was received</param>
     /// <param name="type">Message type of the data</param>
-    public virtual Task OnMessageReceived(ArraySegment<byte> message, WebSocketMessageType type) => Task.Delay(0);
-
-    /// <summary>
-    /// Fires with the connection with the client has closed
-    /// </summary>
-    public virtual void OnClose(WebSocketCloseStatus? closeStatus, string? closeStatusDescription)
-    {
-    }
+    public virtual ValueTask OnMessageReceivedAsync(ArraySegment<byte> message, WebSocketMessageType type) => ValueTask.CompletedTask;
 
     /// <summary>
     /// Fires with the connection with the client has closed and after OnClose
     /// </summary>
-    public virtual Task OnCloseAsync(WebSocketCloseStatus? closeStatus, string? closeStatusDescription) => Task.Delay(0);
+    public virtual ValueTask OnCloseAsync(WebSocketCloseStatus? closeStatus, string? closeStatusDescription) => ValueTask.CompletedTask;
 
     /// <summary>
     /// Fires when an exception occurs in the message reading loop
@@ -151,7 +134,7 @@ public abstract class WebSocketConnection
             {
                 // user was authorized so accept the socket
                 // accept(null, RunWebSocket);
-                await this.RunWebSocket(webSocket);
+                await this.RunWebSocketAsync(webSocket);
                 return;
             }
         }
@@ -161,12 +144,10 @@ public abstract class WebSocketConnection
         this._context = null;
     }
 
-    private async Task RunWebSocket(WebSocket webSocket)
+    private async Task RunWebSocketAsync(WebSocket webSocket)
     {
         this._webSocket = new WebSocketAdapter(webSocket);
 
-        // ReSharper disable once MethodHasAsyncOverload
-        this.OnOpen();
         await this.OnOpenAsync();
 
         var buffer = new byte[this.MaxMessageSize];
@@ -176,10 +157,10 @@ public abstract class WebSocketConnection
         {
             try
             {
-                received = await this.WebSocket.ReceiveMessage(buffer, this._cts.Token);
+                received = await this.WebSocket.ReceiveMessageAsync(buffer, this._cts.Token);
                 if (received.Message.Count > 0)
                 {
-                    await this.OnMessageReceived(received.Message, received.Type);
+                    await this.OnMessageReceivedAsync(received.Message, received.Type);
                 }
             }
             catch (TaskCanceledException)
@@ -212,7 +193,7 @@ public abstract class WebSocketConnection
 
         try
         {
-            await this.WebSocket.Close(WebSocketCloseStatus.NormalClosure, string.Empty, this._cts.Token);
+            await this.WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, this._cts.Token);
         }
         catch
         {
@@ -224,8 +205,6 @@ public abstract class WebSocketConnection
             this._cts.Cancel();
         }
 
-        // ReSharper disable once MethodHasAsyncOverload
-        this.OnClose(this.WebSocket.CloseStatus, this.WebSocket.CloseStatusDescription);
         await this.OnCloseAsync(this.WebSocket.CloseStatus, this.WebSocket.CloseStatusDescription);
         this._webSocket = null;
     }

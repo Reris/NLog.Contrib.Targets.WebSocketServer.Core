@@ -2,7 +2,7 @@
 
 namespace NLog.Contrib.Targets.WebSocketServer;
 
-public class WebSocketClient : IWebSocketClient
+public class WebSocketClient
 {
     public WebSocketClient(IWebSocket webSocket)
     {

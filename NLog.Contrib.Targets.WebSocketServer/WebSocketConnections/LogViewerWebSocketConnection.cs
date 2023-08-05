@@ -9,7 +9,7 @@ namespace NLog.Contrib.Targets.WebSocketServer.WebSocketConnections;
 
 public class LogViewerWebSocketConnection : WebSocketConnection
 {
-    public override async Task OnMessageReceived(ArraySegment<byte> message, WebSocketMessageType type)
+    public override async ValueTask OnMessageReceivedAsync(ArraySegment<byte> message, WebSocketMessageType type)
     {
         if (message.Array is null)
         {
@@ -24,20 +24,24 @@ public class LogViewerWebSocketConnection : WebSocketConnection
         }
     }
 
-    public override void OnOpen()
+    public override ValueTask OnOpenAsync()
     {
         foreach (var target in LogViewerWebSocketConnection.GetWebSocketTargets())
         {
             target.Subscribe(this.WebSocket);
         }
+
+        return ValueTask.CompletedTask;
     }
 
-    public override void OnClose(WebSocketCloseStatus? closeStatus, string? closeStatusDescription)
+    public override ValueTask OnCloseAsync(WebSocketCloseStatus? closeStatus, string? closeStatusDescription)
     {
         foreach (var target in LogViewerWebSocketConnection.GetWebSocketTargets())
         {
             target.Unsubscribe(this.WebSocket);
         }
+
+        return ValueTask.CompletedTask;
     }
 
     private static IEnumerable<WebSocketTarget> GetWebSocketTargets()

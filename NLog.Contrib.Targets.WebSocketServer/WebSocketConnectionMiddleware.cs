@@ -49,7 +49,9 @@ public class WebSocketConnectionMiddleware<T> : IMiddleware
                     return;
                 }
 
-                await EmbeddedFileController.RespondAsync("ViewerSpa", context, requestPath, this._logViewerOptions.ViewerIndex);
+                var file = await EmbeddedFileHelper.GetFileAsync("ViewerSpa", requestPath, this._logViewerOptions.ViewerIndex);
+                context.Response.ContentType = file.ContentType;
+                await context.Response.WriteAsync(file.Content, Encoding.UTF8);
             }
             catch (FileNotFoundException)
             {

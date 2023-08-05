@@ -9,11 +9,11 @@ public interface IWebSocket : IDisposable
 {
     WebSocketCloseStatus? CloseStatus { get; }
     string? CloseStatusDescription { get; }
-    Task SendText(ArraySegment<byte> data, bool endOfMessage, CancellationToken cancelToken);
-    Task SendBinary(ArraySegment<byte> data, bool endOfMessage, CancellationToken cancelToken);
-    Task Send(ArraySegment<byte> data, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancelToken);
-    Task Close(WebSocketCloseStatus closeStatus, string closeDescription, CancellationToken cancelToken);
-    Task<ReceivedMessage> ReceiveMessage(byte[] buffer, CancellationToken cancelToken);
+    Task SendTextAsync(ArraySegment<byte> data, bool endOfMessage, CancellationToken cancelToken = default);
+    Task SendBinaryAsync(ArraySegment<byte> data, bool endOfMessage, CancellationToken cancelToken = default);
+    Task SendAsync(ArraySegment<byte> data, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancelToken = default);
+    Task CloseAsync(WebSocketCloseStatus closeStatus, string closeDescription, CancellationToken cancelToken = default);
+    Task<ReceivedMessage> ReceiveMessageAsync(byte[] buffer, CancellationToken cancelToken = default);
 
     public record struct ReceivedMessage(WebSocketMessageType Type, ArraySegment<byte> Message);
 }

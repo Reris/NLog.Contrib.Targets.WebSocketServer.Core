@@ -12,45 +12,46 @@ namespace NLog.Contrib.Targets.WebSocketServer;
 
 public class LogEntryDistributor : IDisposable
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web);
     private readonly BufferBlock<LogEntry> _block;
+    private readonly List<WebSocketClient> _clients = new();
 
-    private readonly ICommandHandler[] _commandHandlers;
-    private readonly List<IWebSocketClient> _connections;
-    private readonly CancellationTokenSource _cts;
+    private readonly ICommandHandler[] _commandHandlers = { new FilterCommandHandler() };
+    private readonly CancellationTokenSource _cts = new();
     private readonly int _maxConnectedClients;
-    private readonly ReaderWriterLockSlim _semaphore;
+    private readonly ReaderWriterLockSlim _semaphore = new(LockRecursionPolicy.NoRecursion);
+    public readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web);
 
     private int _disposed;
 
-    public LogEntryDistributor(int maxConnectedClients)
+    public LogEntryDistributor(int maxConnectedClients = 100)
     {
         this._maxConnectedClients = maxConnectedClients;
-        this._cts = new CancellationTokenSource();
-        this._block = new BufferBlock<LogEntry>(new DataflowBlockOptions { CancellationToken = this._cts.Token });
-        this._connections = new List<IWebSocketClient>();
-        this._semaphore = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+        this._block = new BufferBlock<LogEntry>(new DataflowBlockOptions { CancellationToken = this.RunningCancellationToken });
 
-        this._commandHandlers = new ICommandHandler[] { new FilterCommandHandler() };
-
-        Task.Run(this.ReceiveAndBroadcast);
+        Task.Run(this.ReceiveAndBroadcastAsync);
     }
 
-    public void Dispose() => this.Dispose(true);
+    public CancellationToken RunningCancellationToken => this._cts.Token;
+    public IReadOnlyList<WebSocketClient> Clients => this._clients;
 
-    internal bool TryAddWebSocketToPool(IWebSocket con)
+    public void Dispose()
     {
+        GC.SuppressFinalize(this);
+        this.Dispose(true);
+    }
+
+    public bool TryAddWebSocketToPool(IWebSocket con)
+    {
+        this._semaphore.EnterWriteLock();
         try
         {
-            this._semaphore.EnterWriteLock();
-
-            if (this._connections.Count >= this._maxConnectedClients)
+            if (this.Clients.Count >= this._maxConnectedClients)
             {
                 return false;
             }
 
             var ws = new WebSocketClient(con);
-            this._connections.Add(ws);
+            this._clients.Add(ws);
             return true;
         }
         finally
@@ -59,16 +60,16 @@ public class LogEntryDistributor : IDisposable
         }
     }
 
-    private async Task ReceiveAndBroadcast()
+    private async Task ReceiveAndBroadcastAsync()
     {
         while (!this._cts.IsCancellationRequested)
         {
-            var message = await this._block.ReceiveAsync(this._cts.Token).ConfigureAwait(false);
-            this.ParallelBroadcastLogEntry(message);
+            var message = await this._block.ReceiveAsync(this.RunningCancellationToken).ConfigureAwait(false);
+            await this.ParallelBroadcastLogEntryAsync(message);
         }
     }
 
-    public void Broadcast(string logline, DateTime timestamp)
+    public void Broadcast(string logline)
     {
         if (!this._cts.IsCancellationRequested)
         {
@@ -76,40 +77,43 @@ public class LogEntryDistributor : IDisposable
         }
     }
 
-    private void ParallelBroadcastLogEntry(LogEntry logEntry)
+    private async Task ParallelBroadcastLogEntryAsync(LogEntry logEntry)
     {
+        WebSocketClient[] clients;
+        this._semaphore.EnterReadLock();
         try
         {
-            this._semaphore.EnterReadLock();
-            Parallel.ForEach(
-                this._connections,
-                new ParallelOptions
-                {
-                    CancellationToken = this._cts.Token,
-                    MaxDegreeOfParallelism = Environment.ProcessorCount * 2
-                },
-                ws => this.SendLogEntry(ws, logEntry));
+            clients = this._clients.ToArray();
         }
         finally
         {
             this._semaphore.ExitReadLock();
         }
+
+        await Parallel.ForEachAsync(
+            clients,
+            new ParallelOptions
+            {
+                CancellationToken = this.RunningCancellationToken,
+                MaxDegreeOfParallelism = Environment.ProcessorCount * 2
+            },
+            (client, ct) => this.SendLogEntryAsync(client, logEntry, ct));
     }
 
-    private void SendLogEntry(IWebSocketClient ws, LogEntry logEntry)
+    private async ValueTask SendLogEntryAsync(WebSocketClient client, LogEntry logEntry, CancellationToken cancellationToken)
     {
         try
         {
-            if (ws.Expression is not null && !ws.Expression.IsMatch(logEntry.Entry))
+            if (client.Expression is not null && !client.Expression.IsMatch(logEntry.Entry))
             {
                 return;
             }
 
 
-            ws.WebSocket.SendText(
-                new ArraySegment<byte>(JsonSerializer.SerializeToUtf8Bytes(logEntry, LogEntryDistributor.SerializerOptions)),
+            await client.WebSocket.SendTextAsync(
+                new ArraySegment<byte>(JsonSerializer.SerializeToUtf8Bytes(logEntry, this.SerializerOptions)),
                 true,
-                this._cts.Token);
+                cancellationToken);
         }
         catch
         {
@@ -117,13 +121,13 @@ public class LogEntryDistributor : IDisposable
         }
     }
 
-    internal Task AcceptWebSocketCommands(string? message, IWebSocket webSocket)
+    public ValueTask AcceptWebSocketCommandsAsync(string? message, IWebSocket webSocket)
     {
         try
         {
             if (message is null) // server shutting down
             {
-                return Task.CompletedTask;
+                return ValueTask.CompletedTask;
             }
 
             var json = JsonNode.Parse(message)?.AsObject();
@@ -131,13 +135,13 @@ public class LogEntryDistributor : IDisposable
 
             if (json is null || command is null)
             {
-                return Task.CompletedTask;
+                return ValueTask.CompletedTask;
             }
 
-            var socket = this._connections.FirstOrDefault(w => w.WebSocket == webSocket);
+            var socket = this.Clients.FirstOrDefault(w => w.WebSocket == webSocket);
             if (socket is null)
             {
-                return Task.CompletedTask;
+                return ValueTask.CompletedTask;
             }
 
             this.HandleCommand(command.GetValue<string>(), json, socket);
@@ -147,10 +151,10 @@ public class LogEntryDistributor : IDisposable
             // munch
         }
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    private void HandleCommand(string commandName, JsonObject json, IWebSocketClient wsClient)
+    private void HandleCommand(string commandName, JsonObject json, WebSocketClient wsClient)
     {
         try
         {
@@ -165,16 +169,15 @@ public class LogEntryDistributor : IDisposable
         }
     }
 
-    internal void RemoveDisconnected(IWebSocket webSocket)
+    public void RemoveDisconnected(IWebSocket webSocket)
     {
+        this._semaphore.EnterWriteLock();
         try
         {
-            this._semaphore.EnterWriteLock();
-
-            var socket = this._connections.FirstOrDefault(w => w.WebSocket == webSocket);
+            var socket = this.Clients.FirstOrDefault(w => w.WebSocket == webSocket);
             if (socket != null)
             {
-                this._connections.Remove(socket);
+                this._clients.Remove(socket);
             }
         }
         finally
@@ -188,11 +191,6 @@ public class LogEntryDistributor : IDisposable
         if (Interlocked.CompareExchange(ref this._disposed, 1, 0) == 1)
         {
             return;
-        }
-
-        if (disposing)
-        {
-            GC.SuppressFinalize(this);
         }
 
         this._cts.Cancel();
