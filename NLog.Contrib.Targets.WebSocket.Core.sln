@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.Contrib.Targets.WebSoc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.Contrib.Targets.WebSocketServer.Core.UnitTests", "NLog.Contrib.Targets.WebSocketServer.Core.UnitTests\NLog.Contrib.Targets.WebSocketServer.Core.UnitTests.csproj", "{F846DC08-87BC-42B8-A085-C83B1A77AD4C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.Contrib.LogListener.Tcp", "NLog.Contrib.LogListener.Tcp\NLog.Contrib.LogListener.Tcp.csproj", "{AD4CA51D-AF6F-418A-8765-FCD2C52C8734}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.Contrib.LogListener.Tcp.UnitTests", "NLog.Contrib.LogListener.Tcp.UnitTests\NLog.Contrib.LogListener.Tcp.UnitTests.csproj", "{7310623E-3D8D-4EB7-86C0-B0471E3CF52B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{F846DC08-87BC-42B8-A085-C83B1A77AD4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F846DC08-87BC-42B8-A085-C83B1A77AD4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F846DC08-87BC-42B8-A085-C83B1A77AD4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD4CA51D-AF6F-418A-8765-FCD2C52C8734}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD4CA51D-AF6F-418A-8765-FCD2C52C8734}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD4CA51D-AF6F-418A-8765-FCD2C52C8734}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD4CA51D-AF6F-418A-8765-FCD2C52C8734}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7310623E-3D8D-4EB7-86C0-B0471E3CF52B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7310623E-3D8D-4EB7-86C0-B0471E3CF52B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7310623E-3D8D-4EB7-86C0-B0471E3CF52B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7310623E-3D8D-4EB7-86C0-B0471E3CF52B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
