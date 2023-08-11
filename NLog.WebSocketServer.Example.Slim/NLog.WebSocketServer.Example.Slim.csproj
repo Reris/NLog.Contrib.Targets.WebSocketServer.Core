@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\NLog.Contrib.LogListener\NLog.Contrib.LogListener.csproj" />
       <ProjectReference Include="..\NLog.Contrib.Targets.WebSocketServer.Core\NLog.Contrib.Targets.WebSocketServer.Core.csproj" />
     </ItemGroup>
 

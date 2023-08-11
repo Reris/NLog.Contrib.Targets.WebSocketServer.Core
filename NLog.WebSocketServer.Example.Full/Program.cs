@@ -1,12 +1,12 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using NLog;
+using NLog.Contrib.LogListener;
 using NLog.Contrib.Targets.WebSocketServer.Core;
 using NLog.Web;
 
@@ -25,10 +25,13 @@ if (devMode && Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseNLog();
-builder.Services.AddNLogTargetWebSocket();
-builder.Services.AddControllersWithViews();
+builder.Services.AddNLogTargetWebSocket()
+       .AddLogListener(builder.Configuration.GetSection("LogListener"))
+       .AddControllersWithViews();
 
 var app = builder.Build();
+
+// Use wwwdist to be a second wwwroot. It's easier to delete and add the whole folder when building the SPA
 if (app.Environment.WebRootFileProvider is CompositeFileProvider compositeFileProvider)
 {
     var wwwdist = Path.Combine(builder.Environment.ContentRootPath, @"wwwdist");
@@ -41,6 +44,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseNLogWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(60) });
+app.Services.StartLogListeners();
 app.UseStaticFiles();
 app.UseRouting();
 
@@ -50,17 +54,4 @@ app.MapControllerRoute(
 
 app.MapFallbackToFile("index.html");
 
-LogTicker();
-
 app.Run();
-
-static async void LogTicker()
-{
-    var i = 0;
-    var logger = LogManager.GetCurrentClassLogger();
-    while (true)
-    {
-        logger.Info("Log tick {Tick}", ++i);
-        await Task.Delay(TimeSpan.FromSeconds(5));
-    }
-}
