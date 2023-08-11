@@ -27,9 +27,9 @@ Parser.Default.ParseArguments<Options>(args)
                               ++o.Length;
                           }
 
-                          var messageSize = new string('.', o.Length);
+                          var message = "{row}: " + new string('.', o.Length);
                           // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                          logger.Info("{row}: " + messageSize, i);
+                          logger.Log(LogLevel.FromOrdinal(((int)i - 1) % 7), message, i);
                           await Task.Delay(o.Interval, cts.Token);
                       }
                   });
