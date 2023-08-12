@@ -44,8 +44,11 @@ export class LoggerService {
     const s$ = new ReplaySubject<IMessage>();
 
     if (start != null) {
-      let wasConnected = false;
-      s$.next({ type: "system", content: `connecting to '${start.url}'` });
+      let wasConnected = start.readyState === start.OPEN;
+      if (!wasConnected) {
+        s$.next({ type: "system", content: `connecting to '${start.url}'` });
+      }
+
       start.addEventListener("open", () => {
         wasConnected = true;
         s$.next({ type: "system", content: `connected to '${start.url}'` })

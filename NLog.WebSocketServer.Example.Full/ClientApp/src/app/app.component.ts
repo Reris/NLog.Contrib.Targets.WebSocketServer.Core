@@ -1,17 +1,8 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { RouterModule } from "@angular/router";
 
 import { LogMenuComponent } from "./log-menu/log-menu.component";
 import { LogViewerComponent } from "./log-viewer/log-viewer.component";
-
-// ReSharper disable once InconsistentNaming
-export const ROUTES: Routes = [
-  {
-    path: "",
-    component: LogViewerComponent,
-    pathMatch: "full"
-  },
-];
 
 @Component({
   selector: "app-root",

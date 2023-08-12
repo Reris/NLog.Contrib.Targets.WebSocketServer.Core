@@ -1,0 +1,7 @@
+.settings-grid {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  gap: var(--container-space);
+  margin: var(--container-space);
+  align-items: baseline;
+}

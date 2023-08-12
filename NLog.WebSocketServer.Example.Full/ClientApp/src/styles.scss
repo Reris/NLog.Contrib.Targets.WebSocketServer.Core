@@ -4,6 +4,11 @@
 :root {
   --margin: 5px;
   --padding: 5px;
+  --container-space: 16px;
+  --bgcolor: #222426;
+  --textcolor: #fff;
+  --menu-bgcolor: #333;
+  --menu-hovercolor: #606266;
 }
 
 * {
@@ -13,17 +18,19 @@
 /* Provide sufficient contrast against dark background */
 body {
   margin: 0;
-  background-color: #222426;
-  color: #fff;
-  font-family: 'Segoe UI';
+  background-color: var(--bgcolor);
+  color: var(--textcolor);
+  font-family: 'Segoe UI', sans-serif;
 }
 
 input {
-  border: 1px solid #444;
+  border: 1px solid #666;
   border-radius: 4px;
   margin: 0 var(--margin);
   line-height: 20px;
-  vertical-align: text-top;
+  background: #555;
+  color: var(--textcolor);
+  vertical-align: inherit;
 
   &[type=number] {
     text-align: end;
@@ -36,10 +43,23 @@ input {
 }
 
 button {
-  padding: var(--padding);
-  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.8);
+  border-color: #666;
+  background: #555;
+  padding: 3px 16px;
+  border-radius: 5px;
+  font-weight: normal;
+  text-transform: uppercase;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    color: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 5px rgba(192, 192, 192, .4);
+  }
 }
 
 .container {
-  margin: 16px;
+  margin: var(--container-space);
 }
