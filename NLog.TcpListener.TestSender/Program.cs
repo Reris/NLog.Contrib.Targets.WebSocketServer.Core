@@ -14,30 +14,74 @@ Parser.Default.ParseArguments<Options>(args)
               LogManager.Setup().LoadConfigurationFromFile(o.NLogConfigFile, false);
               var cts = new CancellationTokenSource();
               var logger = LogManager.GetCurrentClassLogger();
-              Console.WriteLine("Press any key to stop");
-              Task.Run(
-                  async () =>
+              var currentRow = 0u;
+              Loop(
+                  async ct =>
                   {
-                      var currentRow = 0u;
-                      while (!cts.Token.IsCancellationRequested)
+                      var i = unchecked(++currentRow);
+                      if (o.AddSize > 0 && i % o.AddSize == 0)
                       {
-                          var i = unchecked(++currentRow);
-                          if (i % o.IncrementLength == 0)
-                          {
-                              ++o.Length;
-                          }
-
-                          var message = "{row}: " + new string('.', o.Length);
-                          // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                          logger.Log(LogLevel.FromOrdinal(((int)i - 1) % 7), message, i);
-                          await Task.Delay(o.Interval, cts.Token);
+                          ++o.Size;
                       }
-                  });
 
-              Console.ReadKey();
-              cts.Cancel();
-              Console.WriteLine("Finished!");
+                      var message = "{row}: " + new string('.', o.Size);
+                      // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
+                      logger.Log(LogLevel.FromOrdinal(((int)i - 1) % 7), message, i);
+                      await Task.Delay(o.Interval, ct);
+                  },
+                  cts);
+
+              Console.WriteLine("Press any key to stop");
+              Loop(
+                  async ct =>
+                  {
+                      if (!Console.KeyAvailable)
+                      {
+                          await Task.Delay(50, ct);
+                          return;
+                      }
+
+                      Console.ReadKey();
+                      Console.WriteLine("Finished!");
+                      cts.Cancel();
+                  },
+                  cts).GetAwaiter().GetResult();
           });
+return;
+
+static Task Loop(Func<CancellationToken, Task> func, CancellationTokenSource cancellationTokenSource)
+    => Task.Run(
+        async () =>
+        {
+            var ct = cancellationTokenSource.Token;
+            try
+            {
+                while (!ct.IsCancellationRequested)
+                {
+                    await func(ct);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // munch
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Stopped with exception:");
+                var previousForgroundColor = Console.ForegroundColor;
+                try
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine(e);
+                }
+                finally
+                {
+                    Console.ForegroundColor = previousForgroundColor;
+                }
+            }
+
+            cancellationTokenSource.Cancel();
+        });
 
 
 [UsedImplicitly]
@@ -50,9 +94,9 @@ public record Options
     [Option('c', "config", Required = false, HelpText = "The NLog.config")]
     public string NLogConfigFile { get; set; } = "NLog.console.config";
 
-    [Option('l', "length", Required = false, HelpText = "Length of a message.")]
-    public int Length { get; set; } = 30;
+    [Option('s', "size", Required = false, HelpText = "Starting size of a message.")]
+    public int Size { get; set; } = 30;
 
-    [Option("incrementlenght", Required = false, HelpText = "Increment the length of a message each N message by 1.")]
-    public int IncrementLength { get; set; } = 1;
+    [Option('a', "add", Required = false, HelpText = "Add 1 size to each N message.")]
+    public int AddSize { get; set; } = 1;
 }
