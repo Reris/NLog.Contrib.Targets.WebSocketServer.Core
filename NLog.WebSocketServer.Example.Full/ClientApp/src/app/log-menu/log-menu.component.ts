@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { BehaviorSubject } from "rxjs";
 
-import { LoggerService } from "../log-viewer/logger.service";
+import { LoggerService } from "../logger.service";
 import { LogSettingsComponent } from "../log-settings/log-settings.component";
 
 @Component({

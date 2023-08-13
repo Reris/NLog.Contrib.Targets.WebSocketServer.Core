@@ -1,17 +1,17 @@
 import { EventEmitter, Injectable } from "@angular/core";
-import { catchError, map, of, pairwise, ReplaySubject, shareReplay, switchMap } from "rxjs";
-import { environment } from "../../environments/environment";
+import { BehaviorSubject, catchError, map, of, pairwise, ReplaySubject, shareReplay, switchMap } from "rxjs";
 
-export interface IMessage {
-  type: "system" | "log";
-  content: any;
-}
+import { environment } from "../environments/environment";
+import { IMessage } from "./IMessage";
+import { LogSettings } from "./LogSettings";
 
 @Injectable({
   providedIn: "root"
 })
 export class LoggerService {
   public onClear = new EventEmitter();
+  private _settings$ = new BehaviorSubject<LogSettings>(new LogSettings());
+  public settings$ = this._settings$.asObservable();
   private _server$ = new ReplaySubject<string | null>(2);
   private _websocket$ =
     this._server$.pipe(map((a) => a != null ? new WebSocket(a) : null), pairwise(), map(([a, b]) => this.disconnect(a, b)), shareReplay(1));

@@ -2,7 +2,8 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestro
 import { CommonModule } from "@angular/common";
 import { Subscription } from "rxjs";
 
-import { IMessage, LoggerService } from "./logger.service";
+import { LoggerService } from "../logger.service";
+import { IMessage } from "../IMessage";
 
 @Component({
   selector: "app-log-viewer",

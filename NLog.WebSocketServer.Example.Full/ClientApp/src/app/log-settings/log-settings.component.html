@@ -1,34 +1,56 @@
-<div class="settings-grid">
-  <label>Source</label>
-  <input id="source" ng-model="newSource" type="text"/>
+<form (ngSubmit)="apply()" [formGroup]="settingsForm">
 
-  <label>Input Format</label>
-  <div>
-    <input id="json" name="inputFormat" type="radio" value="json"/>
-    <label for="json">Json</label>
-    <input id="csv" name="inputFormat" type="radio" value="csv"/>
-    <label for="csv">CSV</label>
+  <div class="settings-grid">
+    <label for="maxRows">Max rows</label>
+    <input formControlName="maxRows" id="maxRows" type="number"/>
   </div>
 
-  <label>CSV Format</label>
-  <input type="text" value="date|level|machinename|processname|logger|message"/>
+  <div class="settings-grid">
+    <label>Colors</label>
+    <div formGroupName="colors">
+      <label for="systemColor">System</label>
+      <input formControlName="system" id="systemColor" type="color">
 
-  <label>Max rows</label>
-  <input id="maxRows" ng-change="setLineCount(numberOfLines)" ng-model="numberOfLines" type="number"/>
-</div>
-<div class="settings-grid">
-  <label>Colors</label>
-  <div>
-    <label for="systemColor">System</label><input id="systemColor" type="color">
-    <label for="traceColor">Trace</label><input id="traceColor" type="color">
-    <label for="debugColor">Debug</label><input id="debugColor" type="color">
-    <label for="infoColor">Info</label><input id="infoColor" type="color">
-    <label for="warnColor">Warn</label><input id="warnColor" type="color">
-    <label for="errorColor">Error</label><input id="errorColor" type="color">
-    <label for="fatalColor">Fatal</label><input id="fatalColor" type="color">
+      <label for="traceColor">Trace</label>
+      <input formControlName="trace" id="traceColor" type="color">
+
+      <label for="debugColor">Debug</label>
+      <input formControlName="debug" id="debugColor" type="color">
+
+      <label for="infoColor">Info</label>
+      <input formControlName="info" id="infoColor" type="color">
+
+      <label for="warnColor">Warn</label>
+      <input formControlName="warn" id="warnColor" type="color">
+
+      <label for="errorColor">Error</label>
+      <input formControlName="error" id="errorColor" type="color">
+
+      <label for="fatalColor">Fatal</label>
+      <input formControlName="fatal" id="fatalColor" type="color">
+    </div>
   </div>
-</div>
 
-<div class="container">
-  <button ng-click="addSource(newSource, newSoureColor)">Apply</button>
-</div>
+  <hr/>
+
+  <div class="settings-grid" formGroupName="source">
+
+    <label for="source">Source</label>
+    <input formControlName="source" id="source" type="text"/>
+
+    <label>Input Format</label>
+    <div>
+      <input formControlName="inputFormat" id="json" name="inputFormat" type="radio" value="json"/>
+      <label for="json">Json</label>
+      <input formControlName="inputFormat" id="csv" name="inputFormat" type="radio" value="csv"/>
+      <label for="csv">CSV</label>
+    </div>
+
+    <label [hidden]="settingsForm.get('source.inputFormat')?.value !== 'csv'" for="csvFormat">CSV Format</label>
+    <input [hidden]="settingsForm.get('source.inputFormat')?.value !== 'csv'" formControlName="csvFormat" id="csvFormat" type="text"/>
+  </div>
+
+  <div class="container">
+    <button type="submit">Apply</button>
+  </div>
+</form>
