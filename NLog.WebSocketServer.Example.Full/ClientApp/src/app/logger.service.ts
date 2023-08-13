@@ -1,7 +1,6 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import { BehaviorSubject, catchError, map, of, pairwise, ReplaySubject, shareReplay, switchMap } from "rxjs";
 
-import { environment } from "../environments/environment";
 import { IMessage } from "./IMessage";
 import { LogSettings } from "./LogSettings";
 
@@ -13,26 +12,25 @@ export class LoggerService {
   private _settings$ = new BehaviorSubject<LogSettings>(new LogSettings());
   public settings$ = this._settings$.asObservable();
   private _server$ = new ReplaySubject<string | null>(2);
-  private _websocket$ =
-    this._server$.pipe(map((a) => a != null ? new WebSocket(a) : null), pairwise(), map(([a, b]) => this.disconnect(a, b)), shareReplay(1));
+  private _websocket$ = this._server$.pipe(
+    map((a) => a != null ? new WebSocket(a) : null),
+    pairwise(),
+    map(([a, b]) => this.disconnect(a, b)),
+    shareReplay(1));
   private _currentStream$ = this._websocket$.pipe(map(a => this.connect(a)));
   public stream$ = this._currentStream$.pipe(switchMap(a => a), catchError(e => of<IMessage>({ type: "system", content: e })));
 
   constructor() {
     this._server$.next(null);
-    this._server$.next(this.determineServer());
+    this.settings$.subscribe(a => this._server$.next(a.sources[0].source));
   }
 
   public clear() {
     this.onClear.next(undefined);
   }
 
-  private determineServer() {
-    if (environment.production) {
-      return `ws://${window.location.host}/wslogger/listen`;
-    }
-
-    return "ws://localhost:5095/wslogger/listen";
+  public updateSettings(settings: LogSettings) {
+    this._settings$.next(settings);
   }
 
   private disconnect(previous: WebSocket | null, next: WebSocket | null): WebSocket | null {

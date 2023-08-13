@@ -33,21 +33,23 @@
 
   <hr/>
 
-  <div class="settings-grid" formGroupName="source">
+  <div class="settings-grid" formArrayName="sources">
+    <ng-container *ngFor="let sourceItem of sources; let i = index" [formGroup]="sourceItem">
 
-    <label for="source">Source</label>
-    <input formControlName="source" id="source" type="text"/>
+      <label for="source">Source</label>
+      <input formControlName="source" id="source" type="text"/>
 
-    <label>Input Format</label>
-    <div>
-      <input formControlName="inputFormat" id="json" name="inputFormat" type="radio" value="json"/>
-      <label for="json">Json</label>
-      <input formControlName="inputFormat" id="csv" name="inputFormat" type="radio" value="csv"/>
-      <label for="csv">CSV</label>
-    </div>
+      <label>Input Format</label>
+      <div>
+        <input formControlName="inputFormat" id="json" name="inputFormat" type="radio" value="json"/>
+        <label for="json">Json</label>
+        <input formControlName="inputFormat" id="csv" name="inputFormat" type="radio" value="csv"/>
+        <label for="csv">CSV</label>
+      </div>
 
-    <label [hidden]="settingsForm.get('source.inputFormat')?.value !== 'csv'" for="csvFormat">CSV Format</label>
-    <input [hidden]="settingsForm.get('source.inputFormat')?.value !== 'csv'" formControlName="csvFormat" id="csvFormat" type="text"/>
+      <label [hidden]="sourceItem.get('inputFormat')?.value !== 'csv'" for="csvFormat">CSV Format</label>
+      <input [hidden]="sourceItem.get('inputFormat')?.value !== 'csv'" formControlName="csvFormat" id="csvFormat" type="text"/>
+    </ng-container>
   </div>
 
   <div class="container">
