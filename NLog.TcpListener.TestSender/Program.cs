@@ -24,7 +24,7 @@ Parser.Default.ParseArguments<Options>(args)
                           ++o.Size;
                       }
 
-                      var message = "{row}: " + new string('.', o.Size);
+                      var message = "{row}: " +o.Message+ new string('.', o.Size);
                       // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                       logger.Log(LogLevel.FromOrdinal(((int)i - 1) % 7), message, i);
                       await Task.Delay(o.Interval, ct);
@@ -99,4 +99,7 @@ public record Options
 
     [Option('a', "add", Required = false, HelpText = "Add 1 size to each N message.")]
     public int AddSize { get; set; } = 1;
+    
+    [Option('m', "message", Required = false, HelpText = "The message. Or at least a part of it.")]
+    public string? Message { get; set; } = null;
 }
