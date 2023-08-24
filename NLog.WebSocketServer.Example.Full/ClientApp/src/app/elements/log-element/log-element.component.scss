@@ -1,0 +1,90 @@
+.card {
+  display: grid;
+  grid-template: auto / 10em auto 15em;
+  grid-template-areas:
+    "le lo da"
+    "me me me"
+    "pr .. ma";
+  border: #444444 solid 1px;
+  background: #333;
+  margin-bottom: var(--margin);
+
+  div {
+    padding: 0 var(--padding) 0 var(--padding);
+  }
+}
+
+.card-trace {
+  .level {
+    background: var(--log-color-trace);
+  }
+}
+
+.card-debug {
+  .level {
+    background: var(--log-color-debug);
+  }
+}
+
+.card-info {
+  .level {
+    background: var(--log-color-info);
+  }
+}
+
+.card-warn {
+  .level {
+    background: var(--log-color-warn);
+  }
+}
+
+.card-error {
+  .level {
+    background: var(--log-color-error);
+  }
+}
+
+.card-fatal {
+  .level {
+    background: var(--log-color-fatal);
+  }
+}
+
+.level {
+  grid-area: le;
+  text-align: center;
+}
+
+.logger {
+  grid-area: lo;
+  font-size: 0.8em;
+}
+
+.date {
+  grid-area: da;
+  text-align: end;
+  font-size: 0.8em;
+}
+
+.message {
+  grid-area: me;
+  background: var(--bgcolor);
+
+  pre {
+    margin: var(--margin);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+.processname {
+  grid-area: pr;
+  font-size: 0.6em;
+}
+
+.machinename {
+  grid-area: ma;
+  font-size: 0.5em;
+  text-align: end;
+}
+

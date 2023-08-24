@@ -25,6 +25,6 @@ export class LogMenuComponent {
   }
 
   public openSettings() {
-    //this.settingsOpen$.next(!this.settingsOpen$.value)
+    this.settingsOpen$.next(!this.settingsOpen$.value)
   }
 }

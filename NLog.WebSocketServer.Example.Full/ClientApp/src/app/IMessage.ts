@@ -1,5 +1,8 @@
 ﻿export interface IMessage {
-  type: "system" | "log";
-  content: any;
+  date: string;
+  level: string;
+  machinename: string;
+  processname: string;
+  logger: string;
+  message: string;
 }
-

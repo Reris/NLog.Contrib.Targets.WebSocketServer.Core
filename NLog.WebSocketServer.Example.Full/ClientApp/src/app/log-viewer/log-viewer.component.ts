@@ -1,9 +1,21 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, Renderer2, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  Injector,
+  OnDestroy,
+  Type,
+  ViewChild,
+  ViewContainerRef
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { Subscription } from "rxjs";
+import { map, Subscription } from "rxjs";
 
 import { LoggerService } from "../logger.service";
-import { IMessage } from "../IMessage";
+import { ILogEvent } from "../ILogEvent";
+import { ISystemEvent } from "../ISystemEvent";
+import { LogElementComponent } from "../elements/log-element/log-element.component";
+import { SystemElementComponent } from "../elements/system-element/system-element.component";
 
 @Component({
   selector: "app-log-viewer",
@@ -14,17 +26,28 @@ import { IMessage } from "../IMessage";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LogViewerComponent implements AfterViewInit, OnDestroy {
+  public styles$ = this._loggerService.settings$.pipe(map(a => {
+    const styleObject: Record<string, string> = {};
+    styleObject["--log-color-system"] = a.colors.system;
+    styleObject["--log-color-trace"] = a.colors.trace;
+    styleObject["--log-color-debug"] = a.colors.debug;
+    styleObject["--log-color-info"] = a.colors.info;
+    styleObject["--log-color-warn"] = a.colors.warn;
+    styleObject["--log-color-error"] = a.colors.error;
+    styleObject["--log-color-fatal"] = a.colors.fatal;
+    return styleObject;
+  }));
 
-  @ViewChild("messages", { read: ElementRef })
-  private _messages: ElementRef<HTMLElement> | undefined;
+  @ViewChild("messages", { read: ViewContainerRef })
+  private _messages: ViewContainerRef | undefined;
   private _subs: Subscription[] = [];
 
-  public constructor(private readonly _loggerService: LoggerService, private _renderer: Renderer2) {
+  public constructor(private readonly _loggerService: LoggerService) {
   }
 
   public ngAfterViewInit(): void {
-    this._subs.push(this._loggerService.stream$.subscribe((a: IMessage) => this.onMessage(a)));
-    this._subs.push(this._loggerService.onClear.subscribe(() => Array.from(this._messages!.nativeElement.children).forEach(c => c.remove())));
+    this._subs.push(this._loggerService.stream$.subscribe(a => this.onMessage(a)));
+    this._subs.push(this._loggerService.onClear.subscribe(() => this._messages!.clear()));
   }
 
   public ngOnDestroy(): void {
@@ -33,14 +56,23 @@ export class LogViewerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private onMessage(msg: IMessage): void {
-    const element = this._renderer.createElement("div") as HTMLElement;
-    element.classList.add(msg.type + "Row");
-    const text = this._renderer.createText(msg.content["entry"] ?? msg.content as string);
-    this._renderer.appendChild(element, text);
-    this._renderer.appendChild(this._messages!.nativeElement, element);
+  private onMessage(logEvent: ILogEvent | ISystemEvent): void {
+    let componentType: Type<unknown>;
+    switch (logEvent.type) {
+      case "system":
+        componentType = SystemElementComponent;
+        break;
+      case "log":
+        componentType = LogElementComponent;
+        break;
+    }
+
+    // Very static values, but lots of them. Keep refreshes away and inject the value to have it fully ready at start
+    const injector = Injector.create({ providers: [{ provide: "logEvent", useValue: logEvent }] });
+    const element = this._messages!.createComponent(componentType, { injector });
+    element.hostView.markForCheck();
     if (this.getSelectedText() == "") {
-      element.scrollIntoView();
+      element.location.nativeElement.scrollIntoView();
     }
   }
 

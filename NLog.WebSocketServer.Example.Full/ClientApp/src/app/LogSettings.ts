@@ -7,13 +7,13 @@ export class LogSettings {
 }
 
 export class Colors {
-  public system: string = "#4488bb";
-  public trace: string = "#888888";
-  public debug: string = "#dddddd";
-  public info: string = "#00aa00";
-  public warn: string = "#ffaa00";
-  public error: string = "#ff0000";
-  public fatal: string = "#cc00cc";
+  public system: string = "#447799";
+  public trace: string = "#333333";
+  public debug: string = "#000000";
+  public info: string = "#006600";
+  public warn: string = "#996600";
+  public error: string = "#990000";
+  public fatal: string = "#990099";
 }
 
 export class LogSource {

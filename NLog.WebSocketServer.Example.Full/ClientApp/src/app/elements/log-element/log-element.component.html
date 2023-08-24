@@ -1,0 +1,9 @@
+<div [class]="'card-'+logEvent.content.level.toLowerCase()"
+     class="card">
+  <div class="level">{{ logEvent.content.level }}</div>
+  <div class="logger">{{ logEvent.content.logger }}</div>
+  <div class="date">{{ logEvent.content.date }}</div>
+  <div class="message"><pre>{{ logEvent.content.message }}</pre></div>
+  <div class="processname">{{ logEvent.content.processname }}</div>
+  <div class="machinename">{{ logEvent.content.machinename }}</div>
+</div>
