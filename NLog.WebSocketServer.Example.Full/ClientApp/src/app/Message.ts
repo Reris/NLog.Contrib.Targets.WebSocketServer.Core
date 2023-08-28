@@ -1,4 +1,4 @@
-﻿export interface IMessage {
+﻿export interface Message {
   date: string;
   level: string;
   machinename: string;

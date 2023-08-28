@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
-import { ILogEvent } from "../../ILogEvent";
+import { LogEvent } from "../../LogEvent";
 
 @Component({
   selector: "app-log-element",
@@ -12,6 +12,6 @@ import { ILogEvent } from "../../ILogEvent";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LogElementComponent {
-  public constructor(@Inject("logEvent") public readonly logEvent: ILogEvent) {
+  public constructor(@Inject("logEvent") public readonly logEvent: LogEvent) {
   }
 }

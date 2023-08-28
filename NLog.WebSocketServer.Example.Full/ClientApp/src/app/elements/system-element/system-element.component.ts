@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
-import { ISystemEvent } from "../../ISystemEvent";
+import { SystemEvent } from "../../SystemEvent";
 
 @Component({
   selector: "app-system-element",
@@ -12,6 +12,6 @@ import { ISystemEvent } from "../../ISystemEvent";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SystemElementComponent {
-  public constructor(@Inject("logEvent") public readonly logEvent: ISystemEvent) {
+  public constructor(@Inject("logEvent") public readonly logEvent: SystemEvent) {
   }
 }

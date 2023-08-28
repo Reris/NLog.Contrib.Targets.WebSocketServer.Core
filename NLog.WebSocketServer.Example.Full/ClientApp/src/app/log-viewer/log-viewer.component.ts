@@ -12,8 +12,8 @@ import { CommonModule } from "@angular/common";
 import { map, Subscription } from "rxjs";
 
 import { LoggerService } from "../logger.service";
-import { ILogEvent } from "../ILogEvent";
-import { ISystemEvent } from "../ISystemEvent";
+import { LogEvent } from "../LogEvent";
+import { SystemEvent } from "../SystemEvent";
 import { LogElementComponent } from "../elements/log-element/log-element.component";
 import { SystemElementComponent } from "../elements/system-element/system-element.component";
 
@@ -56,7 +56,7 @@ export class LogViewerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private onMessage(logEvent: ILogEvent | ISystemEvent): void {
+  private onMessage(logEvent: LogEvent | SystemEvent): void {
     let componentType: Type<unknown>;
     switch (logEvent.type) {
       case "system":
@@ -66,11 +66,11 @@ export class LogViewerComponent implements AfterViewInit, OnDestroy {
         componentType = LogElementComponent;
         break;
     }
-
+    
     // Very static values, but lots of them. Keep refreshes away and inject the value to have it fully ready at start
     const injector = Injector.create({ providers: [{ provide: "logEvent", useValue: logEvent }] });
     const element = this._messages!.createComponent(componentType, { injector });
-    element.hostView.markForCheck();
+    element.hostView.detectChanges();    
     if (this.getSelectedText() == "") {
       element.location.nativeElement.scrollIntoView();
     }

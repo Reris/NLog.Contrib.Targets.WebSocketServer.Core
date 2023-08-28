@@ -1,30 +1,64 @@
 import { EventEmitter, Injectable } from "@angular/core";
-import { BehaviorSubject, catchError, map, of, pairwise, ReplaySubject, shareReplay, switchMap } from "rxjs";
+import {
+  BehaviorSubject,
+  filter,
+  interval,
+  map,
+  merge,
+  Observable,
+  pairwise,
+  ReplaySubject,
+  retry,
+  Subject,
+  switchMap
+} from "rxjs";
 
-import { IMessage } from "./IMessage";
+import { Message } from "./Message";
 import { LogSettings } from "./LogSettings";
 import * as Papa from "papaparse";
-import { ILogEvent } from "./ILogEvent";
-import { ILogEntry } from "./ILogEntry";
-import { ISystemEvent } from "./ISystemEvent";
+import { LogEvent } from "./LogEvent";
+import { LogEntry } from "./LogEntry";
+import { SystemEvent } from "./SystemEvent";
+import { webSocket, WebSocketSubject } from "rxjs/webSocket";
+
 
 @Injectable({
   providedIn: "root"
 })
 export class LoggerService {
+  private static readonly retryMs = 5000;
   public onClear = new EventEmitter();
   private _settings$ = new BehaviorSubject<LogSettings>(new LogSettings());
   public settings$ = this._settings$.asObservable();
   private _server$ = new ReplaySubject<string | null>(2);
-  private _websocket$ = this._server$.pipe(
-    map((a) => a != null ? new WebSocket(a) : null),
-    pairwise(),
-    map(([a, b]) => this.disconnect(a, b)),
-    shareReplay(1));
-  private _currentStream$ = this._websocket$.pipe(map(a => this.connect(a)));
-  public stream$ = this._currentStream$.pipe(
-    switchMap(a => a),
-    catchError(e => of<ILogEvent | ISystemEvent>({ type: "system", content: e.toString() })));
+  private _stream$ = new Subject<LogEvent | SystemEvent>();
+  private _websocket$: Observable<WebSocketSubject<LogEvent | SystemEvent>> = this._server$
+    .pipe(
+      map((a) => a != null ? ({ ws: this.connect(a), url: a }) : null),
+      pairwise(),
+      map(([a, b]) => {
+        this.disconnect(a?.ws ?? null);
+        return b
+      }),
+      filter(a => a?.ws != null),
+      map(a => ({ ws: a!.ws!, url: a!.url! })))
+    .pipe(
+      map(a => <WebSocketSubject<LogEvent | SystemEvent>>a.ws.pipe(
+        filter(b => b != null),
+        map(b => b!),
+        retry({
+          delay: () => {
+            this._stream$.next({
+              type: "system",
+              content: `could not connect to '${a.url}'. Retry in ${LoggerService.retryMs / 1000} seconds…`
+            });
+            return interval(LoggerService.retryMs);
+          }
+        }))));
+  public stream$: Observable<LogEvent | SystemEvent> = merge(
+    this._stream$,
+    this._websocket$.pipe(switchMap(a => a))
+  );
 
   constructor() {
     this._server$.next(null);
@@ -42,52 +76,38 @@ export class LoggerService {
     this._settings$.next(settings);
   }
 
-  private _parser: (e: MessageEvent) => (ILogEvent | ISystemEvent | null) = () => ({
+  private _parser: (e: MessageEvent) => (LogEvent | SystemEvent | null) = () => ({
     type: "system",
     content: "No parser defined"
   });
 
-  private disconnect(previous: WebSocket | null, next: WebSocket | null): WebSocket | null {
-    previous?.close();
-    return next;
+  private disconnect(previous: WebSocketSubject<LogEvent | SystemEvent | null> | null) {
+    previous?.complete();
   }
 
-  private connect(start: WebSocket | null): ReplaySubject<ILogEvent | ISystemEvent> {
-    const s$ = new ReplaySubject<ILogEvent | ISystemEvent>();
-
-    if (start != null) {
-      let wasConnected = start.readyState === start.OPEN;
-      if (!wasConnected) {
-        s$.next({ type: "system", content: `connecting to '${start.url}'` });
-      }
-
-      start.addEventListener("open", () => {
-        wasConnected = true;
-        s$.next({ type: "system", content: `connected to '${start.url}'` })
-      });
-      start.addEventListener("close", e => {
-        if (wasConnected) {
-          s$.next({ type: "system", content: `closed '${start.url}', ${e.code}:${e.reason}` });
-        } else {
-          s$.next({ type: "system", content: `could not connect to '${start.url}'` });
-        }
-      });
-      start.addEventListener("message", e => {
-        if (e.data != null) {
-          const event = this._parser(e);
-          if (event != null) {
-            s$.next(event);
-          }
-        }
-      });
-    } else {
-      s$.next({ type: "system", content: "Not connected" });
+  private connect(url: string): WebSocketSubject<LogEvent | SystemEvent | null> | null {
+    if (url == null) {
+      return null;
     }
 
-    return s$;
+    this._stream$.next({ type: "system", content: `connecting to '${url}'` });
+    return webSocket({
+      url: url,
+      deserializer: this._parser,
+      openObserver: {
+        next: () => {
+          this._stream$.next({ type: "system", content: `connected to '${url}'` })
+        }
+      },
+      closeObserver: {
+        next: e => {
+          this._stream$.next({ type: "system", content: `closed '${url}', ${e.code}:${e.reason}` });
+        }
+      },
+    });
   }
 
-  private getParser(settings: LogSettings): (e: MessageEvent<string>) => ILogEvent | ISystemEvent | null {
+  private getParser(settings: LogSettings): (e: MessageEvent<string>) => LogEvent | SystemEvent | null {
     const source = settings.sources[0]; // Currently only 1 source can be set
     switch (source.inputFormat) {
       case "csv": {
@@ -98,7 +118,7 @@ export class LoggerService {
         }
 
         return (e) => {
-          const entry = JSON.parse(e.data) as ILogEntry;
+          const entry = JSON.parse(e.data) as LogEntry;
           const splits = Papa.parse<string[]>(entry.entry, { delimiter: delimiter }).data.find(a => !!a);
           if (!splits) {
             return null;
@@ -114,13 +134,13 @@ export class LoggerService {
             result[headers[i]] = splits[i];
           }
 
-          return { type: "log", content: result as unknown as IMessage };
+          return { type: "log", content: result as unknown as Message };
         }
       }
       case "json":
         return (e) => {
-          const entry = JSON.parse(e.data) as ILogEntry;
-          const message = JSON.parse(entry.entry) as IMessage;
+          const entry = JSON.parse(e.data) as LogEntry;
+          const message = JSON.parse(entry.entry) as Message;
           return { type: "log", content: message }
         };
       default:
