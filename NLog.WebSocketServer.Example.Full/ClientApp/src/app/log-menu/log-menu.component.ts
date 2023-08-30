@@ -16,6 +16,7 @@ import { LogSettingsComponent } from "../log-settings/log-settings.component";
 export class LogMenuComponent {
 
   public readonly settingsOpen$ = new BehaviorSubject<boolean>(false);
+  public readonly paused$ = this._loggerService.paused$;
 
   public constructor(private readonly _loggerService: LoggerService) {
   }
@@ -26,5 +27,9 @@ export class LogMenuComponent {
 
   public openSettings() {
     this.settingsOpen$.next(!this.settingsOpen$.value)
+  }
+
+  public pause() {
+    this._loggerService.pause();
   }
 }

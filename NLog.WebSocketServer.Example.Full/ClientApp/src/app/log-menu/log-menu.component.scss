@@ -36,3 +36,22 @@
 #maxRows {
   width: 4em;
 }
+
+.blink {
+  animation-name: blinker;
+  animation-duration: 2s;
+  animation-timing-function: ease;
+  animation-iteration-count: infinite;
+}
+
+@keyframes blinker {
+  0% {
+    opacity: .5;
+  }
+  50% {
+    opacity: 1.0;
+  }
+  100% {
+    opacity: .5;
+  }
+}

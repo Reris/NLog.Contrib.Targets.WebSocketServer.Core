@@ -28,8 +28,13 @@ import { webSocket, WebSocketSubject } from "rxjs/webSocket";
 export class LoggerService {
   private static readonly retryMs = 5000;
   public onClear = new EventEmitter();
+
+  private _paused$ = new BehaviorSubject<boolean>(false);
+  public paused$ = this._paused$.asObservable();
+
   private _settings$ = new BehaviorSubject<LogSettings>(new LogSettings());
   public settings$ = this._settings$.asObservable();
+
   private _server$ = new ReplaySubject<string | null>(2);
   private _stream$ = new Subject<LogEvent | SystemEvent>();
   private _websocket$: Observable<WebSocketSubject<LogEvent | SystemEvent>> = this._server$
@@ -44,7 +49,7 @@ export class LoggerService {
       map(a => ({ ws: a!.ws!, url: a!.url! })))
     .pipe(
       map(a => <WebSocketSubject<LogEvent | SystemEvent>>a.ws.pipe(
-        filter(b => b != null),
+        filter(b => b != null && !this._paused$.value),
         map(b => b!),
         retry({
           delay: () => {
@@ -74,6 +79,10 @@ export class LoggerService {
 
   public updateSettings(settings: LogSettings) {
     this._settings$.next(settings);
+  }
+
+  public pause() {
+    this._paused$.next(!this._paused$.value);
   }
 
   private _parser: (e: MessageEvent) => (LogEvent | SystemEvent | null) = () => ({
