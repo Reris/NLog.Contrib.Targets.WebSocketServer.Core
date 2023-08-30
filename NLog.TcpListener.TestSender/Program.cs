@@ -26,7 +26,7 @@ Parser.Default.ParseArguments<Options>(args)
 
                       var message = "{row}: " +o.Message+ new string('.', o.Size);
                       // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                      logger.Log(LogLevel.FromOrdinal(((int)i - 1) % 7), message, i);
+                      logger.Log(LogLevel.FromOrdinal(((int)i - 1) % 6), message, i);
                       await Task.Delay(o.Interval, ct);
                   },
                   cts);
