@@ -1,6 +1,7 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import {
-  BehaviorSubject, distinct,
+  BehaviorSubject,
+  distinct,
   filter,
   interval,
   map,
@@ -16,7 +17,7 @@ import { webSocket, WebSocketSubject } from "rxjs/webSocket";
 import * as Papa from "papaparse";
 
 import { Message } from "./Message";
-import { LogSettings } from "./LogSettings";
+import { LogSettings, LogSource } from "./LogSettings";
 import { LogEvent } from "./LogEvent";
 import { LogEntry } from "./LogEntry";
 import { SystemEvent } from "./SystemEvent";
@@ -39,19 +40,19 @@ export class LoggerService {
   private _settings$ = new BehaviorSubject<LogSettings>(this.restoreLogSettings());
   public settings$ = this._settings$.asObservable();
 
-  private _server$ = new ReplaySubject<string | null>(2);
+  private _server$ = new ReplaySubject<LogSource | null>(2);
   private _stream$ = new Subject<LogEvent | SystemEvent>();
   private _websocket$: Observable<WebSocketSubject<LogEvent | SystemEvent>> = this._server$
     .pipe(
-      distinct(),
-      map((a) => a != null ? ({ ws: this.connect(a), url: a }) : null),
+      distinct(a => JSON.stringify(a)),
+      map((a) => a != null ? ({ ws: this.connect(a), source: a }) : null),
       pairwise(),
       map(([a, b]) => {
         this.disconnect(a?.ws ?? null);
         return b
       }),
       filter(a => a?.ws != null),
-      map(a => ({ ws: a!.ws!, url: a!.url! })))
+      map(a => ({ ws: a!.ws!, source: a!.source })))
     .pipe(
       map(a => <WebSocketSubject<LogEvent | SystemEvent>>a.ws.pipe(
         filter(b => b != null),
@@ -61,7 +62,7 @@ export class LoggerService {
           delay: () => {
             this._stream$.next({
               type: "system",
-              content: `could not connect to '${a.url}'. Retry in ${LoggerService.retryMs / 1000} seconds…`
+              content: `could not connect to '${a.source.source}'. Retry in ${LoggerService.retryMs / 1000} seconds…`
             });
             return interval(LoggerService.retryMs);
           }
@@ -76,7 +77,7 @@ export class LoggerService {
 
     this.settings$.subscribe(a => {
       this._parser = this.getParser(a);
-      this._server$.next(a.sources[0].source);
+      this._server$.next(a.sources[0]);
     });
   }
 
@@ -88,7 +89,7 @@ export class LoggerService {
     if (localStorage) {
       localStorage.setItem(LoggerService.logSettingsStorageKey, JSON.stringify(settings));
     }
-    
+
     this._settings$.next(settings);
   }
 
@@ -118,23 +119,23 @@ export class LoggerService {
     previous?.complete();
   }
 
-  private connect(url: string): WebSocketSubject<LogEvent | SystemEvent | null> | null {
-    if (url == null) {
+  private connect(source: LogSource): WebSocketSubject<LogEvent | SystemEvent | null> | null {
+    if (source?.source == null) {
       return null;
     }
 
-    this._stream$.next({ type: "system", content: `connecting to '${url}'` });
+    this._stream$.next({ type: "system", content: `connecting to '${source.source}'` });
     return webSocket({
-      url: url,
+      url: source.source,
       deserializer: this._parser,
       openObserver: {
         next: () => {
-          this._stream$.next({ type: "system", content: `connected to '${url}'` })
+          this._stream$.next({ type: "system", content: `connected to '${source.source}'` })
         }
       },
       closeObserver: {
         next: e => {
-          this._stream$.next({ type: "system", content: `closed '${url}', ${e.code}:${e.reason}` });
+          this._stream$.next({ type: "system", content: `closed '${source.source}', ${e.code}:${e.reason}` });
         }
       },
     });
