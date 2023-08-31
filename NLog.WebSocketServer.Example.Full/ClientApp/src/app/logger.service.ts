@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import {
-  BehaviorSubject,
+  BehaviorSubject, distinct,
   filter,
   interval,
   map,
@@ -43,6 +43,7 @@ export class LoggerService {
   private _stream$ = new Subject<LogEvent | SystemEvent>();
   private _websocket$: Observable<WebSocketSubject<LogEvent | SystemEvent>> = this._server$
     .pipe(
+      distinct(),
       map((a) => a != null ? ({ ws: this.connect(a), url: a }) : null),
       pairwise(),
       map(([a, b]) => {
