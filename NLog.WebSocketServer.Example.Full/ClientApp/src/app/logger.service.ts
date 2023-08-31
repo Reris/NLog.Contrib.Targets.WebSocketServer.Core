@@ -26,6 +26,7 @@ import { LogLevel } from "./LogLevel";
   providedIn: "root"
 })
 export class LoggerService {
+  private static readonly logSettingsStorageKey = "LOG_LOGSETTINGS";
   private static readonly retryMs = 5000;
   public onClear = new EventEmitter();
 
@@ -35,7 +36,7 @@ export class LoggerService {
   private _minLevel$ = new BehaviorSubject<LogLevel>(LogLevel.Trace);
   public minLevel$ = this._minLevel$.asObservable();
 
-  private _settings$ = new BehaviorSubject<LogSettings>(new LogSettings());
+  private _settings$ = new BehaviorSubject<LogSettings>(this.restoreLogSettings());
   public settings$ = this._settings$.asObservable();
 
   private _server$ = new ReplaySubject<string | null>(2);
@@ -71,6 +72,7 @@ export class LoggerService {
 
   constructor() {
     this._server$.next(null);
+
     this.settings$.subscribe(a => {
       this._parser = this.getParser(a);
       this._server$.next(a.sources[0].source);
@@ -82,6 +84,10 @@ export class LoggerService {
   }
 
   public updateSettings(settings: LogSettings) {
+    if (localStorage) {
+      localStorage.setItem(LoggerService.logSettingsStorageKey, JSON.stringify(settings));
+    }
+    
     this._settings$.next(settings);
   }
 
@@ -91,6 +97,15 @@ export class LoggerService {
 
   public setMinLevel(level: LogLevel) {
     this._minLevel$.next(level);
+  }
+
+  private restoreLogSettings(): LogSettings {
+    let storedSettings: string | null = null;
+    if (localStorage && (storedSettings = localStorage.getItem(LoggerService.logSettingsStorageKey))) {
+      return JSON.parse(storedSettings) as LogSettings;
+    }
+
+    return new LogSettings()
   }
 
   private _parser: (e: MessageEvent) => (LogEvent | SystemEvent | null) = () => ({
