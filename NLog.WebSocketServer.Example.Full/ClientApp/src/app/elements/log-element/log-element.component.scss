@@ -8,9 +8,11 @@
   border: #444444 solid 1px;
   background: #333;
   margin-bottom: var(--margin);
+  align-items: baseline;
 
   div {
     padding: 0 var(--padding) 0 var(--padding);
+    align-self: center;
   }
 }
 
