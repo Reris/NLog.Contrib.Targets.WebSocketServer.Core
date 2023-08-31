@@ -1,12 +1,13 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import {
   BehaviorSubject,
-  distinct,
+  distinctUntilChanged,
   filter,
   interval,
   map,
   merge,
   Observable,
+  of,
   pairwise,
   ReplaySubject,
   retry,
@@ -44,7 +45,7 @@ export class LoggerService {
   private _stream$ = new Subject<LogEvent | SystemEvent>();
   private _websocket$: Observable<WebSocketSubject<LogEvent | SystemEvent>> = this._server$
     .pipe(
-      distinct(a => JSON.stringify(a)),
+      distinctUntilChanged((a, b) => JSON.stringify(a) == JSON.stringify(b)),
       map((a) => a != null ? ({ ws: this.connect(a), source: a }) : null),
       pairwise(),
       map(([a, b]) => {
@@ -54,19 +55,21 @@ export class LoggerService {
       filter(a => a?.ws != null),
       map(a => ({ ws: a!.ws!, source: a!.source })))
     .pipe(
-      map(a => <WebSocketSubject<LogEvent | SystemEvent>>a.ws.pipe(
-        filter(b => b != null),
-        filter(() => !this._paused$.value),
-        map(b => b!),
-        retry({
-          delay: () => {
-            this._stream$.next({
-              type: "system",
-              content: `could not connect to '${a.source.source}'. Retry in ${LoggerService.retryMs / 1000} seconds…`
-            });
-            return interval(LoggerService.retryMs);
-          }
-        }))));
+      switchMap(a => {
+        return <Observable<WebSocketSubject<LogEvent | SystemEvent>>>of(a.ws.pipe(
+          filter(b => b != null),
+          filter(() => !this._paused$.value),
+          map(b => b!),
+          retry({
+            delay: () => {
+              this._stream$.next({
+                type: "system",
+                content: `could not connect to '${a.source.source}'. Retry in ${LoggerService.retryMs / 1000} seconds…`
+              });
+              return interval(LoggerService.retryMs);
+            }
+          })))
+      }));
   public stream$: Observable<LogEvent | SystemEvent> = merge(
     this._stream$,
     this._websocket$.pipe(switchMap(a => a))
@@ -76,7 +79,6 @@ export class LoggerService {
     this._server$.next(null);
 
     this.settings$.subscribe(a => {
-      this._parser = this.getParser(a);
       this._server$.next(a.sources[0]);
     });
   }
@@ -110,11 +112,6 @@ export class LoggerService {
     return new LogSettings()
   }
 
-  private _parser: (e: MessageEvent) => (LogEvent | SystemEvent | null) = () => ({
-    type: "system",
-    content: "No parser defined"
-  });
-
   private disconnect(previous: WebSocketSubject<LogEvent | SystemEvent | null> | null) {
     previous?.complete();
   }
@@ -127,7 +124,7 @@ export class LoggerService {
     this._stream$.next({ type: "system", content: `connecting to '${source.source}'` });
     return webSocket({
       url: source.source,
-      deserializer: this._parser,
+      deserializer: this.getParser(source),
       openObserver: {
         next: () => {
           this._stream$.next({ type: "system", content: `connected to '${source.source}'` })
@@ -141,8 +138,7 @@ export class LoggerService {
     });
   }
 
-  private getParser(settings: LogSettings): (e: MessageEvent<string>) => LogEvent | SystemEvent | null {
-    const source = settings.sources[0]; // Currently only 1 source can be set
+  private getParser(source: LogSource): (e: MessageEvent<string>) => LogEvent | SystemEvent | null {
     switch (source.inputFormat) {
       case "csv": {
         const delimiter = source.inputFormat[source.inputFormat.search(/\W/)]; // first non-alphanumeric
@@ -173,9 +169,21 @@ export class LoggerService {
       }
       case "json":
         return (e) => {
-          const entry = JSON.parse(e.data) as LogEntry;
-          const message = JSON.parse(entry.entry) as Message;
-          return { type: "log", content: message }
+          let entry: LogEntry;
+          try {
+            entry = JSON.parse(e.data) as LogEntry;
+          } catch (err) {
+            this._stream$.next({ type: "system", content: `parsing error '${err}' in entry '${e.data}'` });
+            return null;
+          }
+
+          try {
+            const message = JSON.parse(entry.entry) as Message;
+            return { type: "log", content: message }
+          } catch (err) {
+            this._stream$.next({ type: "system", content: `parsing error '${err}' in message '${entry.entry}'` });
+            return null;
+          }
         };
       default:
         throw new Error(`invalid input format ${source.inputFormat}`)
