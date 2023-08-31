@@ -4,4 +4,17 @@
   gap: var(--container-space);
   margin: var(--container-space);
   align-items: baseline;
+
+  & > * {
+    align-self: center;
+  }
+}
+
+.settings-cell {
+  display: flex;
+  align-items: baseline;
+
+  & > * {
+    align-self: center;
+  }
 }

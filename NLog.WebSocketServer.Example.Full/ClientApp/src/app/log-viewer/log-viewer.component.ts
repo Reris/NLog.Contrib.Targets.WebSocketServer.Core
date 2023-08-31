@@ -9,13 +9,14 @@ import {
   ViewContainerRef
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { map, Subscription } from "rxjs";
+import { combineLatest, map, Subscription } from "rxjs";
 
 import { LoggerService } from "../logger.service";
 import { LogEvent } from "../LogEvent";
 import { SystemEvent } from "../SystemEvent";
 import { LogElementComponent } from "../elements/log-element/log-element.component";
 import { SystemElementComponent } from "../elements/system-element/system-element.component";
+import { LogLevel } from "../LogLevel";
 
 @Component({
   selector: "app-log-viewer",
@@ -26,7 +27,7 @@ import { SystemElementComponent } from "../elements/system-element/system-elemen
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LogViewerComponent implements AfterViewInit, OnDestroy {
-  public styles$ = this._loggerService.settings$.pipe(map(a => {
+  private _stylesColor$ = this._loggerService.settings$.pipe(map(a => {
     const styleObject: Record<string, string> = {};
     styleObject["--log-color-system"] = a.colors.system;
     styleObject["--log-color-trace"] = a.colors.trace;
@@ -37,6 +38,45 @@ export class LogViewerComponent implements AfterViewInit, OnDestroy {
     styleObject["--log-color-fatal"] = a.colors.fatal;
     return styleObject;
   }));
+
+  private _stylesVisible$ = this._loggerService.minLevel$.pipe(map(a => {
+    const styleObject: Record<string, string> = {};
+    console.log(a);
+    if (a > LogLevel.Trace) {
+      styleObject["--log-visible-trace"] = "none";
+    }
+
+    if (a > LogLevel.Debug) {
+      styleObject["--log-visible-debug"] = "none";
+    }
+
+    if (a > LogLevel.Info) {
+      styleObject["--log-visible-info"] = "none";
+    }
+
+    if (a > LogLevel.Warn) {
+      styleObject["--log-visible-warn"] = "none";
+    }
+
+    if (a > LogLevel.Error) {
+      styleObject["--log-visible-error"] = "none";
+    }
+
+    if (a > LogLevel.Fatal) {
+      styleObject["--log-visible-fatal"] = "none";
+    }
+
+    return styleObject;
+  }));
+
+  public styles$ = combineLatest([this._stylesColor$, this._stylesVisible$])
+    .pipe(map((all) => {
+      const result: Record<string, string> = {};
+      for (const a of all) {
+        Object.assign(result, a);
+      }
+      return result;
+    }));
 
   @ViewChild("messages", { read: ViewContainerRef })
   private _messages: ViewContainerRef | undefined;
@@ -66,11 +106,11 @@ export class LogViewerComponent implements AfterViewInit, OnDestroy {
         componentType = LogElementComponent;
         break;
     }
-    
+
     // Very static values, but lots of them. Keep refreshes away and inject the value to have it fully ready at start
     const injector = Injector.create({ providers: [{ provide: "logEvent", useValue: logEvent }] });
     const element = this._messages!.createComponent(componentType, { injector });
-    element.hostView.detectChanges();    
+    element.hostView.detectChanges();
     if (this.getSelectedText() == "") {
       element.location.nativeElement.scrollIntoView();
     }

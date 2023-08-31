@@ -17,46 +17,60 @@
 
 /* Provide sufficient contrast against dark background */
 body {
-  margin: 0;
   background-color: var(--bgcolor);
   color: var(--textcolor);
   font-family: 'Segoe UI', sans-serif;
 }
 
-input {
+button, select, input {
+  line-height: 1.5em;
   border: 1px solid #666;
   border-radius: 4px;
-  margin: 0 var(--margin);
-  line-height: 20px;
-  background: #555;
+  font-size: 0.8em;
   color: var(--textcolor);
-  vertical-align: inherit;
+  background: #555;
+  outline: none;
+
+  &:hover, &:focus {
+    box-shadow: 0 0 5px rgba(192, 192, 192, .4);
+  }
+}
+
+button, select {
+  border-color: #777 #333 #333 #777;
+  cursor: pointer;
+  padding: 3px 16px;
+  text-transform: uppercase;
+}
+
+input {
+  border-color: #333 #777 #777 #333;
+  margin: 0 var(--margin);
+  padding: 3px;
 
   &[type=number] {
     text-align: end;
   }
 
   &[type=color] {
+    border-radius: 50%;
     height: 24px;
     width: 24px;
-  }
-}
+    margin: 0;
 
-button {
-  cursor: pointer;
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0.8);
-  border-color: #666;
-  background: #555;
-  padding: 3px 16px;
-  border-radius: 5px;
-  font-weight: normal;
-  text-transform: uppercase;
-  transition: all 0.2s ease-in-out;
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
 
-  &:hover {
-    color: rgba(255, 255, 255, 1);
-    box-shadow: 0 0 5px rgba(192, 192, 192, .4);
+    &::-webkit-color-swatch {
+      border: none;
+      border-radius: 50%;
+    }
+
+    &::-moz-color-swatch {
+      border: none;
+      border-radius: 50%;
+    }
   }
 }
 

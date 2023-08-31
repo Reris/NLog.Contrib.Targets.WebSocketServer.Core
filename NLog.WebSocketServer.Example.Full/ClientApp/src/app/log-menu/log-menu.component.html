@@ -1,9 +1,17 @@
 <nav class="menu main-menu">
   <div>
-    <button class="symbolButton" [ngClass]="{blink : paused$ | async}" (click)="pause()">Pause</button>
-    <button class="symbolButton" (click)="clear()">Clear</button>
-    <!--<label>Highlight</label><input id="highlight" ng-change="highlight(highlightText)" ng-model="highlightText" type="text"/>-->
-    <!--<label>Filter Regex</label><input id="regex" ng-change="filter(filterExpression)" ng-model="filterExpression" type="text"/>-->
+    <select (ngModelChange)="setMinLevel($event)" [ngModel]="minLevel$ | async" title="Min level of shown entries">
+      <option [ngValue]="LogLevel.Trace">Trace</option>
+      <option [ngValue]="LogLevel.Debug">Debug</option>
+      <option [ngValue]="LogLevel.Info">Info</option>
+      <option [ngValue]="LogLevel.Warn">Warn</option>
+      <option [ngValue]="LogLevel.Error">Error</option>
+      <option [ngValue]="LogLevel.Fatal">Fatal</option>
+    </select>
+    <button (click)="pause()" [ngClass]="{blink : paused$ | async}" class="symbolButton"
+            title="Pause receiving log entries">Pause
+    </button>
+    <button (click)="clear()" class="symbolButton" title="Clear all log entries">Clear</button>
   </div>
   <div>
     <a (click)="openSettings()">Settings</a>

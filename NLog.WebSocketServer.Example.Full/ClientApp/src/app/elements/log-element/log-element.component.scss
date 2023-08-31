@@ -15,36 +15,48 @@
 }
 
 .card-trace {
+  display: var(--log-visible-trace, grid);
+  
   .level {
     background: var(--log-color-trace);
-  }
+  }  
 }
 
 .card-debug {
+  display: var(--log-visible-debug, grid);
+  
   .level {
     background: var(--log-color-debug);
   }
 }
 
 .card-info {
+  display: var(--log-visible-info, grid);
+
   .level {
     background: var(--log-color-info);
   }
 }
 
 .card-warn {
+  display: var(--log-visible-warn, grid);
+
   .level {
     background: var(--log-color-warn);
   }
 }
 
 .card-error {
+  display: var(--log-visible-error, grid);
+
   .level {
     background: var(--log-color-error);
   }
 }
 
 .card-fatal {
+  display: var(--log-visible-fatal, grid);
+
   .level {
     background: var(--log-color-fatal);
   }
@@ -74,6 +86,7 @@
     margin: var(--margin);
     white-space: pre-wrap;
     word-break: break-word;
+    font-size: 0.8em;
   }
 }
 

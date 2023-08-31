@@ -12,15 +12,15 @@ import {
   Subject,
   switchMap
 } from "rxjs";
+import { webSocket, WebSocketSubject } from "rxjs/webSocket";
+import * as Papa from "papaparse";
 
 import { Message } from "./Message";
 import { LogSettings } from "./LogSettings";
-import * as Papa from "papaparse";
 import { LogEvent } from "./LogEvent";
 import { LogEntry } from "./LogEntry";
 import { SystemEvent } from "./SystemEvent";
-import { webSocket, WebSocketSubject } from "rxjs/webSocket";
-
+import { LogLevel } from "./LogLevel";
 
 @Injectable({
   providedIn: "root"
@@ -31,6 +31,9 @@ export class LoggerService {
 
   private _paused$ = new BehaviorSubject<boolean>(false);
   public paused$ = this._paused$.asObservable();
+
+  private _minLevel$ = new BehaviorSubject<LogLevel>(LogLevel.Trace);
+  public minLevel$ = this._minLevel$.asObservable();
 
   private _settings$ = new BehaviorSubject<LogSettings>(new LogSettings());
   public settings$ = this._settings$.asObservable();
@@ -49,7 +52,8 @@ export class LoggerService {
       map(a => ({ ws: a!.ws!, url: a!.url! })))
     .pipe(
       map(a => <WebSocketSubject<LogEvent | SystemEvent>>a.ws.pipe(
-        filter(b => b != null && !this._paused$.value),
+        filter(b => b != null),
+        filter(() => !this._paused$.value),
         map(b => b!),
         retry({
           delay: () => {
@@ -83,6 +87,10 @@ export class LoggerService {
 
   public pause() {
     this._paused$.next(!this._paused$.value);
+  }
+
+  public setMinLevel(level: LogLevel) {
+    this._minLevel$.next(level);
   }
 
   private _parser: (e: MessageEvent) => (LogEvent | SystemEvent | null) = () => ({
