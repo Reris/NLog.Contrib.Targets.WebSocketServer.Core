@@ -98,7 +98,7 @@ public record Options
     public int Size { get; set; } = 30;
 
     [Option('a', "add", Required = false, HelpText = "Add 1 size to each N message.")]
-    public int AddSize { get; set; } = 1;
+    public int AddSize { get; set; } = 0;
     
     [Option('m', "message", Required = false, HelpText = "The message. Or at least a part of it.")]
     public string? Message { get; set; } = null;

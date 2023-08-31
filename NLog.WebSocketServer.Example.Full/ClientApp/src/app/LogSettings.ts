@@ -18,7 +18,7 @@ export class Colors {
 
 export class LogSource {
   public source: string = LogSource.determineServer();
-  public inputFormat: "json" | "csv" = "csv";
+  public inputFormat: "json" | "csv" = "json";
   public csvFormat: string = "date|level|machinename|processname|logger|message";
 
   private static determineServer() {
