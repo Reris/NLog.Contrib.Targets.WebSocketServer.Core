@@ -41,7 +41,6 @@ export class LogViewerComponent implements AfterViewInit, OnDestroy {
 
   private _stylesVisible$ = this._loggerService.minLevel$.pipe(map(a => {
     const styleObject: Record<string, string> = {};
-    console.log(a);
     if (a > LogLevel.Trace) {
       styleObject["--log-visible-trace"] = "none";
     }
