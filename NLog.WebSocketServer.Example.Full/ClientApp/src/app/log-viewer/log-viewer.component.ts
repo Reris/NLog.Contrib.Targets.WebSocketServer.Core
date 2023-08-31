@@ -9,7 +9,7 @@ import {
   ViewContainerRef
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { combineLatest, map, Subscription } from "rxjs";
+import { combineLatest, firstValueFrom, map, Subscription } from "rxjs";
 
 import { LoggerService } from "../logger.service";
 import { LogEvent } from "../LogEvent";
@@ -110,6 +110,7 @@ export class LogViewerComponent implements AfterViewInit, OnDestroy {
     // Very static values, but lots of them. Keep refreshes away and inject the value to have it fully ready at start
     const injector = Injector.create({ providers: [{ provide: "logEvent", useValue: logEvent }] });
     const element = this._messages!.createComponent(componentType, { injector });
+    this.applyMaxRows().then(/*Fire & Forget*/);
     element.hostView.detectChanges();
     if (this.getSelectedText() == "") {
       element.location.nativeElement.scrollIntoView();
@@ -118,5 +119,13 @@ export class LogViewerComponent implements AfterViewInit, OnDestroy {
 
   private getSelectedText() {
     return window.getSelection()?.toString() ?? "";
+  }
+
+  private async applyMaxRows() {
+    const maxRows = (await firstValueFrom(this._loggerService.settings$)).maxRows;
+    while (maxRows > 0 && this._messages!.length > maxRows) {
+      this._messages!.remove(0);
+    }
+
   }
 }
