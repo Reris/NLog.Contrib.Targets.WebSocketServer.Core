@@ -20,22 +20,22 @@ public class NLogDeserializer : INLogDeserializer
     {
         foreach (var format in this._formats)
         {
-            var chunk = format.GetChunk(input);
-            if (chunk.Equals(default))
+            var slice = format.GetSlice(input);
+            if (slice.Equals(default))
             {
                 continue;
             }
 
             try
             {
-                var result = format.Deserialize(input, chunk);
-                var leftover = input.Data[chunk.End.Value..];
+                var result = format.Deserialize(input, slice);
+                var leftover = input.Data[slice.End.Value..];
                 return new ExtractResult(true, result, leftover);
             }
             catch (Exception e) when (skipException)
             {
-                var leftover = input.Data[chunk.End.Value..];
-                var value = input.DataString.Substring(chunk.Start.Value, chunk.End.Value);
+                var leftover = input.Data[slice.End.Value..];
+                var value = input.DataString.Substring(slice.Start.Value, slice.End.Value);
                 NLogDeserializer.MyLogger.Error(
                     "{Deserializer} failed with:\n{Exception}\n\nParsing:\n{Match}",
                     format.GetType().Name,

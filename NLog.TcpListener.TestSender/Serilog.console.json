@@ -1,0 +1,18 @@
+﻿{
+  "Serilog": {
+    "Using":  [ "Serilog.Sinks.Console", "Serilog.Expressions", "Serilog.Enrichers.Environment", "Serilog.Enrichers.Process" ],
+    "MinimumLevel": "Verbose",
+    "WriteTo": [
+      {
+        "Name": "Console",
+        "Args": {
+          "formatter": {
+            "type": "Serilog.Templates.ExpressionTemplate, Serilog.Expressions",
+            "template": "{@t:yyyy-MM-dd HH:mm:ss.ffff}|{@l}|{MachineName}|{ProcessName}|{SourceContext}|{@m}\n"
+          }
+        }
+      }
+    ],
+    "Enrich": [ "FromLogContext", "WithMachineName", "WithProcessName" ]
+  }
+}

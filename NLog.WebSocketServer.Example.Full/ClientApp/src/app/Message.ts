@@ -1,8 +1,9 @@
 ﻿export interface Message {
-  date: string;
-  level: string;
-  machinename: string;
-  processname: string;
-  logger: string;
-  message: string;
+  "@t": string;
+  "@d": string;
+  "@l": string;
+  "@s": string;
+  "@mn": string;
+  "@pn": string;
+  "@m": string;
 }

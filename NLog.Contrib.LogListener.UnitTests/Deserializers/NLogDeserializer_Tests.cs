@@ -23,7 +23,13 @@ public class NLogDeserializer_Tests
 
     [Theory]
     [InlineData(
-        """<log4j:event logger="Foo" level="INFO"><log4j:message>Bar</log4j:message></log4j:event>""",
+        """<log4j:event logger="Foo" level="VERBOSE"><log4j:message>Bar</log4j:message></log4j:event>""",
+        NLogLevel.Trace,
+        "Foo",
+        "Bar",
+        "")]
+    [InlineData(
+        """<log4j:event logger="Foo" level="InFO"><log4j:message>Bar</log4j:message></log4j:event>""",
         NLogLevel.Info,
         "Foo",
         "Bar",
@@ -61,10 +67,10 @@ public class NLogDeserializer_Tests
         // Arrange
         var testee = this.CreateTestee();
         var expectedLevel = LogLevel.FromOrdinal((int)level);
-        var options = new DeserializerOptions();
+        var input = this.CreateInput(data);
 
         // Act
-        var result = testee.TryExtract(new ExtractInput(data, options), false);
+        var result = testee.TryExtract(input, false);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -77,38 +83,44 @@ public class NLogDeserializer_Tests
 
     [Theory]
     [InlineData(
-        """{"logger":"Foo","level":"INFO","message":"Bar"}""",
+        """{"sourceContext":"Foo","level":"VERBOSE","message":"Bar"}""",
+        NLogLevel.Trace,
+        "Foo",
+        "Bar",
+        "")]
+    [InlineData(
+        """{"sourceContext":"Foo","level":"InFO","message":"Bar"}""",
         NLogLevel.Info,
         "Foo",
         "Bar",
         "")]
     [InlineData(
-        """{"logger":"Foo","level":"INFO","message":"Bar","app":"Company.MyApp","machinename":"97d38438edf9"}""",
+        """{"sourceContext":"Foo","level":"INFO","message":"Bar","app":"Company.MyApp","machinename":"97d38438edf9"}""",
         NLogLevel.Info,
         "Foo",
         "Bar",
         "")]
     [InlineData(
-        """{"logger":"Foo","level":"DEBUG","message":"Baz"}""" + """{"logg""",
+        """{"sourceContext":"Foo","level":"DEBUG","message":"Baz"}""" + """{"sourceCo""",
         NLogLevel.Debug,
         "Foo",
         "Baz",
-        """{"logg""")]
+        """{"sourceCo""")]
     [InlineData(
-        """{"logger":"Foo","level":"DEBUG","message":"Baz"}{"logger":"Bar","level":"INFO","message":"Foobar"}""",
+        """{"sourceContext":"Foo","level":"DEBUG","message":"Baz"}{"sourceContext":"Bar","level":"INFO","message":"Foobar"}""",
         NLogLevel.Debug,
         "Foo",
         "Baz",
-        """{"logger":"Bar","level":"INFO","message":"Foobar"}""")]
+        """{"sourceContext":"Bar","level":"INFO","message":"Foobar"}""")]
     public void TryExtract_CompleteJson_ShouldExtract(string data, NLogLevel level, string logger, string message, string leftover)
     {
         // Arrange
         var testee = this.CreateTestee();
         var expectedLevel = LogLevel.FromOrdinal((int)level);
-        var options = new DeserializerOptions();
+        var input = this.CreateInput(data);
 
         // Act
-        var result = testee.TryExtract(new ExtractInput(data, options), false);
+        var result = testee.TryExtract(input, false);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -125,10 +137,10 @@ public class NLogDeserializer_Tests
     {
         // Arrange
         var testee = this.CreateTestee();
-        var options = new DeserializerOptions();
+        var input = this.CreateInput(data);
 
         // Act
-        var result = testee.TryExtract(new ExtractInput(data, options));
+        var result = testee.TryExtract(input);
 
         // Assert
         result.Succeeded.Should().BeFalse();
@@ -142,10 +154,10 @@ public class NLogDeserializer_Tests
     {
         // Arrange
         var testee = this.CreateTestee();
-        var options = new DeserializerOptions();
+        var input = this.CreateInput(data);
 
         // Act
-        var result = testee.TryExtract(new ExtractInput(data, options));
+        var result = testee.TryExtract(input);
 
         // Assert
         result.Succeeded.Should().BeFalse();
@@ -159,10 +171,10 @@ public class NLogDeserializer_Tests
     {
         // Arrange
         var testee = this.CreateTestee();
-        var options = new DeserializerOptions();
+        var input = this.CreateInput(data);
 
         // Act
-        var result = testee.TryExtract(new ExtractInput(data, options));
+        var result = testee.TryExtract(input);
 
         // Assert
         result.Succeeded.Should().BeFalse();
@@ -175,12 +187,15 @@ public class NLogDeserializer_Tests
     {
         // Arrange
         var testee = this.CreateTestee();
-        var options = new DeserializerOptions();
+        var input = this.CreateInput("");
 
         // Act
-        var result = testee.TryExtract(new ExtractInput("", options));
+        var result = testee.TryExtract(input);
 
         // Assert
         result.Should().Be(new ExtractResult(false, null, ""));
     }
+
+    private ExtractInput CreateInput(string data)
+        => new(data, new ListenerOptions { Formats = { new JsonFormat.Options(), new Log4JXmlFormat.Options() } });
 }

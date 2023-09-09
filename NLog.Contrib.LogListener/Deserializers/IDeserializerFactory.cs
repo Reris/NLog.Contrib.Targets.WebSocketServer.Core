@@ -2,6 +2,8 @@
 
 public interface IDeserializerFactory
 {
-    T Get<T>(DeserializerOptions options)
+    T Get<T>(ListenerOptions options)
         where T : IDeserializer;
+
+    void Configure(ListenerOptions options);
 }

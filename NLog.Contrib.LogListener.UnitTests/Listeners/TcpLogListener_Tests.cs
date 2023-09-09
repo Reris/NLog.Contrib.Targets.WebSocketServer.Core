@@ -24,15 +24,15 @@ public class TcpLogListener_Tests
         => new(this._providerFactory, this._clientFactory, this._optionsMonitor);
 
     [Fact]
-    public void TcpOptions__ShouldBeOptionsTcp()
+    public void Options__ShouldBeOptionsListeners()
     {
         // Arrange
-        var expected = new[] { new TcpListenerOptions() };
-        this._optionsMonitor.CurrentValue.Tcp = expected;
+        var expected = new[] { new ListenerOptions() };
+        this._optionsMonitor.CurrentValue.Listeners = expected;
         var testee = this.CreateTestee();
 
         // Act
-        var result = testee.TcpOptions;
+        var result = testee.Options;
 
         // Assert
         result.Should().BeSameAs(expected);
@@ -45,8 +45,8 @@ public class TcpLogListener_Tests
         var channel = Substitute.For<INetworkChannel>();
         var connected = new ConnectedEventArgs(channel);
         var provider = this._providerFactory.Create<ITcpNetworkListener>();
-        var options = new TcpListenerOptions();
-        this._optionsMonitor.CurrentValue.Tcp = new[] { options };
+        var options = new ListenerOptions();
+        this._optionsMonitor.CurrentValue.Listeners = new[] { options };
         var testee = this.CreateTestee();
 
         // Act
@@ -66,8 +66,8 @@ public class TcpLogListener_Tests
     {
         // Arrange
         var provider = this._providerFactory.Create<ITcpNetworkListener>();
-        var options = new TcpListenerOptions { Ip = ip, Port = port };
-        this._optionsMonitor.CurrentValue.Tcp = new[] { options };
+        var options = new ListenerOptions { Ip = ip, Port = port };
+        this._optionsMonitor.CurrentValue.Listeners = new[] { options };
         var testee = this.CreateTestee();
         var expectedEndPoint = IPEndPoint.Parse(expected);
 

@@ -1,0 +1,15 @@
+﻿{
+  "Serilog": {
+    "Using":  [ "Serilog.Sinks.Network", "Serilog.Enrichers.Environment", "Serilog.Enrichers.Process"],
+    "MinimumLevel": "Verbose",
+    "WriteTo": [
+      {
+        "Name": "TCPSink",
+        "Args": {
+          "uri": "tcp://127.0.0.1:4505"
+        }
+      }
+    ],
+    "Enrich": [ "FromLogContext", "WithMachineName", "WithProcessName" ]
+  }
+}

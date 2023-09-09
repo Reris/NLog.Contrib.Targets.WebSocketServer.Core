@@ -20,7 +20,7 @@ public class LogClientFactory_Tests
         // Arrange
         var testee = this.CreateTestee();
         var expectedChannel = Substitute.For<INetworkChannel>();
-        var options = new TcpListenerOptions();
+        var options = new ListenerOptions();
         var expectedDeserializer = this._deserializerFactory.Get<INLogDeserializer>(options);
 
         // Act

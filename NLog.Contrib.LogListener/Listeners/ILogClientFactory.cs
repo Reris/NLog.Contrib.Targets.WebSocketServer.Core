@@ -2,5 +2,5 @@
 
 public interface ILogClientFactory
 {
-    ILogClient CreateFor(INetworkChannel channel, DeserializerOptions options);
+    ILogClient CreateFor(INetworkChannel channel, ListenerOptions options);
 }

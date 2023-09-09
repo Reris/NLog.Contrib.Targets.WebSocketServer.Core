@@ -14,14 +14,14 @@ public class LogClientFactory : ILogClientFactory
         this._deserializerFactory = deserializerFactory ?? throw new ArgumentNullException(nameof(deserializerFactory));
     }
 
-    public ILogClient CreateFor(INetworkChannel channel, DeserializerOptions options)
+    public ILogClient CreateFor(INetworkChannel channel, ListenerOptions options)
         => options switch
         {
-            TcpListenerOptions tcp => new NLogClient(
+            not null => new NLogClient(
                 channel ?? throw new ArgumentNullException(nameof(channel)),
                 this._clientLogger,
-                this._deserializerFactory.Get<INLogDeserializer>(tcp),
-                tcp),
+                this._deserializerFactory.Get<INLogDeserializer>(options),
+                options),
             _ => throw new NotSupportedException()
         };
 }

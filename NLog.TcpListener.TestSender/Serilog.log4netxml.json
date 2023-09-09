@@ -1,0 +1,18 @@
+﻿{
+  "Serilog": {
+    "Using":  ["Serilog.Sinks.Network", "Serilog.Formatting.Log4Net", "Serilog.Enrichers.Environment", "Serilog.Enrichers.Process"],
+    "MinimumLevel": "Verbose",
+    "WriteTo": [
+      {
+        "Name": "TCPSink",
+        "Args": {
+          "uri": "tcp://127.0.0.1:4505",
+          "textFormatter": {
+            "type": "Serilog.Formatting.Log4Net.Log4NetTextFormatter, Serilog.Formatting.Log4Net"
+          }
+        }
+      }
+    ],
+    "Enrich": [ "FromLogContext", "WithMachineName", "WithProcessName" ]
+  }
+}

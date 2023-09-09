@@ -8,10 +8,10 @@ using System.Xml.Linq;
 
 namespace NLog.Contrib.LogListener.Deserializers.Formats;
 
-[FormatDiscriminator(Log4JXmlFormat.Discriminator, typeof(Options))]
-public class Log4JXmlFormat : IFormat
+[FormatDiscriminator(Log4NetXmlFormat.Discriminator, typeof(Options))]
+public class Log4NetXmlFormat : IFormat
 {
-    public const string Discriminator = "log4jxml";
+    public const string Discriminator = "log4netxml";
 
     /// <summary>
     /// Regex any for multiline.
@@ -19,7 +19,7 @@ public class Log4JXmlFormat : IFormat
     private const string Any = "(.|\n|\r)";
 
     private readonly Regex _matcher = new(
-        $"<log4j:event{Log4JXmlFormat.Any}*?/log4j:event>",
+        $"<log4net:event{Log4NetXmlFormat.Any}*?/log4net:event>",
         RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
     public string GetDiscriminator() => Log4JXmlFormat.Discriminator;
@@ -37,16 +37,16 @@ public class Log4JXmlFormat : IFormat
 
     public LogEventInfo Deserialize(ExtractInput input, Range slice)
     {
-        var log4JNamespace = "http://logging.apache.org/log4j/2.0/events";
+        var log4NetNamespace = "http://logging.apache.org/log4net/schemas/log4net-events-1.2/";
         var span = input.DataString.Substring(slice.Start.Value, slice.End.Value);
         using var stringReader = new StringReader(span);
-        using var xmlReader = Log4JXmlFormat.CreateXmlReader(stringReader, ("log4j", log4JNamespace));
+        using var xmlReader = Log4NetXmlFormat.CreateXmlReader(stringReader, ("log4net", log4NetNamespace));
         var xml = XElement.Load(xmlReader);
-        log4JNamespace = xml.Name.NamespaceName;
+        log4NetNamespace = xml.Name.NamespaceName;
         
-        var messageXName = XName.Get("message", log4JNamespace);
-        var propertiesXName = XName.Get("properties", log4JNamespace);
-        var propertiesDataXName = XName.Get("data", log4JNamespace);
+        var messageXName = XName.Get("message", log4NetNamespace);
+        var propertiesXName = XName.Get("properties", log4NetNamespace);
+        var propertiesDataXName = XName.Get("data", log4NetNamespace);
 
         var level = FormatHelper.ParseLogLevel(xml.Attribute("level")?.Value ?? throw new KeyNotFoundException("Attribute: level"));
         var logger = xml.Attribute("logger")?.Value ?? throw new KeyNotFoundException("Attribute: logger");
@@ -57,15 +57,15 @@ public class Log4JXmlFormat : IFormat
                                 x => x.Attribute("value")?.Value)
                          ?? DictionaryHelper<string, string?>.Empty;
 
-        properties.RenameKey("log4jmachinename", "@mn");
-        properties.RenameKey("log4japp", "@pn");
+        properties.RenameKey("log4net:HostName", "@mn");
+        properties.RenameKey("ProcessName", "@pn");
 
         var result = LogEventInfo.Create(level, logger, message);
-        if (long.TryParse(xml.Attribute("timestamp")?.Value, out var timestamp))
+        if (DateTime.TryParse(xml.Attribute("timestamp")?.Value , out var timestamp))
         {
-            result.TimeStamp = DateTime.UnixEpoch.AddMilliseconds(timestamp);
+            result.TimeStamp = timestamp;
         }
-
+        
         foreach (var property in properties)
         {
             result.Properties[property.Key] = property.Value;
@@ -92,6 +92,6 @@ public class Log4JXmlFormat : IFormat
 
     public record Options : FormatOptions
     {
-        public override string GetDiscriminator() => Log4JXmlFormat.Discriminator;
+        public override string GetDiscriminator() => Log4NetXmlFormat.Discriminator;
     }
 }
