@@ -166,8 +166,29 @@ public class NLogDeserializer_Tests
     }
 
     [Theory]
+    [InlineData(" foo")]
     [InlineData("<Foo />")]
-    public void TryExtract_UnknownOrIncomplete_ShouldReturn(string data)
+    public void TryExtract_Unknown_ShouldScrap(string data)
+    {
+        // Arrange
+        var testee = this.CreateTestee();
+        var input = this.CreateInput(data);
+
+        // Act
+        var result = testee.TryExtract(input);
+
+        // Assert
+        result.Succeeded.Should().BeFalse();
+        result.Result.Should().BeNull();
+        result.LeftoverString.Should().BeEmpty();
+    }
+    
+    [Theory]
+    [InlineData("<log4")]
+    [InlineData("""{"logge""")]
+    [InlineData(" \t\n <log4")]
+    [InlineData(" \t\n {\"logge")]
+    public void TryExtract_Incomplete_ShouldReturn(string data)
     {
         // Arrange
         var testee = this.CreateTestee();

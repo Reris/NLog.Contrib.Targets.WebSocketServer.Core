@@ -54,8 +54,8 @@ public static class LogListeners
         serviceCollection.AddTransient<Log4NetXmlFormat>();
 
         serviceCollection.AddSingleton<INetworkProviderFactory, NetworkProviderFactory>();
-        serviceCollection.AddTransient<ITcpNetworkListener, TcpNetworkListener>();
-        serviceCollection.AddSingleton<ILogListener, TcpLogListener>();
+        serviceCollection.AddTransient<TcpNetworkProvider>();
+        serviceCollection.AddSingleton<ILogListener, Listeners.LogListener>();
         serviceCollection.AddSingleton<ILogClientFactory, LogClientFactory>();
         serviceCollection.AddSingleton<RegisteredFormats>(_ => RegisteredFormats.GetRegisteredFormats(serviceCollection));
 

@@ -13,6 +13,25 @@ public class JsonFormat_Tests
         => new();
 
     [Theory]
+    [InlineData("{\"logge", true)]
+    [InlineData(" \r\n \t {\"logge", true)]
+    [InlineData("logge", false)]
+    [InlineData("<log4", false)]
+    [InlineData("", false)]
+    public void HasValidStart_ShouldReturn(string data, bool expected)
+    {
+        // Arrange
+        var testee = this.CreateTestee();
+        var input = this.CreateInput(data);
+
+        // Act
+        var result = testee.HasValidStart(input);
+
+        // Assert
+        result.Should().Be(expected);
+    }
+
+    [Theory]
     [InlineData(
         """{"logger":"Foo","level":"VERBOSE","message":"Bar"}""",
         """{"logger":"Foo","level":"VERBOSE","message":"Bar"}""")]

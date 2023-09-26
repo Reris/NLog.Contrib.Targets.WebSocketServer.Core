@@ -13,6 +13,26 @@ public class Log4JXmlFormat_Tests
         => new();
 
     [Theory]
+    [InlineData("<log4j:event ", true)]
+    [InlineData(" \r\n \t <log4j:event ", true)]
+    [InlineData("logge", false)]
+    [InlineData("{\"Bar\"}", false)]
+    [InlineData("<log4net:event ", false)]
+    [InlineData("", false)]
+    public void HasValidStart_ShouldReturn(string data, bool expected)
+    {
+        // Arrange
+        var testee = this.CreateTestee();
+        var input = this.CreateInput(data);
+
+        // Act
+        var result = testee.HasValidStart(input);
+
+        // Assert
+        result.Should().Be(expected);
+    }
+
+    [Theory]
     [InlineData(
         """<log4j:event logger="Foo" level="TRACE"><log4j:message>Bar</log4j:message></log4j:event>""",
         """<log4j:event logger="Foo" level="TRACE"><log4j:message>Bar</log4j:message></log4j:event>""")]

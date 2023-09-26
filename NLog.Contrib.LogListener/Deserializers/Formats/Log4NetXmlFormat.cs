@@ -17,12 +17,37 @@ public class Log4NetXmlFormat : IFormat
     /// Regex any for multiline.
     /// </summary>
     private const string Any = "(.|\n|\r)";
+    private static readonly byte[] ValidStart = "<log4net"u8.ToArray();
 
     private readonly Regex _matcher = new(
         $"<log4net:event{Log4NetXmlFormat.Any}*?/log4net:event>",
         RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
     public string GetDiscriminator() => Log4JXmlFormat.Discriminator;
+    
+    public bool HasValidStart(ExtractInput input)
+    {
+        for (var i = 0; i < input.Data.Span.Length; i++)
+        {
+            var b = input.Data.Span[i];
+            switch ((char)b)
+            {
+                case '<':
+                    return input.Data.Span[i..(i + Log4NetXmlFormat.ValidStart.Length)].SequenceEqual(Log4NetXmlFormat.ValidStart);
+                case ' ':
+                case '\n':
+                case '\r':
+                case '\t':
+                    continue;
+                default:
+                {
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
 
     public Range GetSlice(ExtractInput input)
     {

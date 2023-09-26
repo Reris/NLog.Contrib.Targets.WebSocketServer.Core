@@ -22,13 +22,31 @@ public class JsonFormat : IFormat, IConfigurable
 
     public string GetDiscriminator() => JsonFormat.Discriminator;
 
-    public Range GetSlice(ExtractInput input)
+    public bool HasValidStart(ExtractInput input)
     {
-        if (!JsonFormat.StartsAsJson(input.Data.Span))
+        foreach (var b in input.Data.Span)
         {
-            return default;
+            switch ((char)b)
+            {
+                case '{':
+                    return true;
+                case ' ':
+                case '\n':
+                case '\r':
+                case '\t':
+                    continue;
+                default:
+                {
+                    return false;
+                }
+            }
         }
 
+        return false;
+    }
+
+    public Range GetSlice(ExtractInput input)
+    {
         try
         {
             var reader = new Utf8JsonReader(input.Data.Span);
@@ -126,29 +144,6 @@ public class JsonFormat : IFormat, IConfigurable
             "logger" => false,
             _ => true
         };
-
-    private static bool StartsAsJson(ReadOnlySpan<byte> data)
-    {
-        foreach (var b in data)
-        {
-            switch ((char)b)
-            {
-                case '{':
-                    return true;
-                case ' ':
-                case '\n':
-                case '\r':
-                case '\t':
-                    continue;
-                default:
-                {
-                    return false;
-                }
-            }
-        }
-
-        return false;
-    }
 
     [PublicAPI]
     public record Options : FormatOptions

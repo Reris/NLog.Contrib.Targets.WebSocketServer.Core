@@ -1,7 +1,8 @@
-﻿namespace NLog.Contrib.LogListener.Listeners;
+﻿using System.Net.Sockets;
+
+namespace NLog.Contrib.LogListener.Listeners;
 
 public interface INetworkProviderFactory
 {
-    T Create<T>()
-        where T : INetworkProvider;
+    INetworkProvider Create(ProtocolType protocol);
 }

@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 namespace NLog.Contrib.LogListener.Listeners;
 
 [ExcludeFromCodeCoverage]
-public class TcpNetworkChannel : INetworkChannel
+public class NetworkChannel : INetworkChannel
 {
-    private static readonly ILogger Logger = InternalLogger.Get<TcpNetworkChannel>();
+    private static readonly ILogger Logger = InternalLogger.Get<NetworkChannel>();
     private readonly CancellationTokenSource _cancellationTokenSource;
 
-    public TcpNetworkChannel(TcpClient client)
+    public NetworkChannel(INetworkClient client)
     {
         this.Client = client ?? throw new ArgumentNullException(nameof(client));
         this.Stream = this.Client.GetStream();
@@ -23,7 +23,7 @@ public class TcpNetworkChannel : INetworkChannel
     }
 
     private NetworkStream Stream { get; }
-    private TcpClient Client { get; }
+    private INetworkClient Client { get; }
 
     public void Dispose()
     {
@@ -34,10 +34,7 @@ public class TcpNetworkChannel : INetworkChannel
         GC.SuppressFinalize(this);
     }
 
-    public EndPoint RemoteEndPoint => this.Client.Client.RemoteEndPoint ?? throw new NoEndpointException();
-
-    public Task SendAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-        => this.Stream.WriteAsync(buffer, offset, count, cancellationToken);
+    public EndPoint RemoteEndPoint => this.Client.RemoteEndPoint ?? throw new NoEndpointException();
 
     public event EventHandler<ReceivedEventArgs>? DataReceived;
     public event EventHandler? Disconnected;
@@ -65,7 +62,7 @@ public class TcpNetworkChannel : INetworkChannel
         }
         catch (Exception e)
         {
-            TcpNetworkChannel.Logger.Fatal(e, "The TcpNetworkChannel of '{RemoteEndpoint}' died", this.RemoteEndPoint.ToString());
+            NetworkChannel.Logger.Fatal(e, "The NetworkChannel of '{RemoteEndpoint}' died", this.RemoteEndPoint.ToString());
         }
         finally
         {

@@ -7,10 +7,10 @@ using Xunit;
 
 namespace NLog.Contrib.LogListener.UnitTests.Listeners;
 
-public class TcpLogListener_Tests
+public class LogListener_Tests
 {
     private readonly ILogClientFactory _clientFactory = Substitute.For<ILogClientFactory>();
-    private readonly IOptionsMonitor<LogListenerOptions> _optionsMonitor = TcpLogListener_Tests.CreateOptionsMonitor();
+    private readonly IOptionsMonitor<LogListenerOptions> _optionsMonitor = LogListener_Tests.CreateOptionsMonitor();
     private readonly INetworkProviderFactory _providerFactory = Substitute.For<INetworkProviderFactory>();
 
     private static IOptionsMonitor<LogListenerOptions> CreateOptionsMonitor()
@@ -20,7 +20,7 @@ public class TcpLogListener_Tests
         return result;
     }
 
-    private TcpLogListener CreateTestee()
+    private LogListener.Listeners.LogListener CreateTestee()
         => new(this._providerFactory, this._clientFactory, this._optionsMonitor);
 
     [Fact]
@@ -44,8 +44,8 @@ public class TcpLogListener_Tests
         // Arrange
         var channel = Substitute.For<INetworkChannel>();
         var connected = new ConnectedEventArgs(channel);
-        var provider = this._providerFactory.Create<ITcpNetworkListener>();
         var options = new ListenerOptions();
+        var provider = this._providerFactory.Create(options.Protocol);
         this._optionsMonitor.CurrentValue.Listeners = new[] { options };
         var testee = this.CreateTestee();
 
@@ -65,8 +65,8 @@ public class TcpLogListener_Tests
     public void Start__ShouldCallProviderConnect(string ip, int port, string expected)
     {
         // Arrange
-        var provider = this._providerFactory.Create<ITcpNetworkListener>();
         var options = new ListenerOptions { Ip = ip, Port = port };
+        var provider = this._providerFactory.Create(options.Protocol);
         this._optionsMonitor.CurrentValue.Listeners = new[] { options };
         var testee = this.CreateTestee();
         var expectedEndPoint = IPEndPoint.Parse(expected);

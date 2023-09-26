@@ -5,11 +5,11 @@ using Microsoft.Extensions.Options;
 
 namespace NLog.Contrib.LogListener.Listeners;
 
-public class TcpLogListener : ILogListener
+public class LogListener : ILogListener
 {
-    private static readonly ILogger Logger = InternalLogger.Get<TcpNetworkChannel>();
+    private static readonly ILogger Logger = InternalLogger.Get<LogListener>();
 
-    public TcpLogListener(INetworkProviderFactory providerFactory, ILogClientFactory clientFactory, IOptionsMonitor<LogListenerOptions> optionsMonitor)
+    public LogListener(INetworkProviderFactory providerFactory, ILogClientFactory clientFactory, IOptionsMonitor<LogListenerOptions> optionsMonitor)
     {
         this.ProviderFactory = providerFactory ?? throw new ArgumentNullException(nameof(providerFactory));
         this.ClientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
@@ -26,11 +26,11 @@ public class TcpLogListener : ILogListener
     {
         foreach (var options in this.Options)
         {
-            TcpLogListener.Logger.Info("Starting {Ip}:{Port}…", options.Ip, options.Port);
-            var listener = this.ProviderFactory.Create<ITcpNetworkListener>();
-            listener.Connected += (_, e) => this.ClientFactory.CreateFor(e.Channel, options);
-            var endpoint = new IPEndPoint(TcpLogListener.ParseIpAddress(options), options.Port);
-            listener.Connect(endpoint);
+            LogListener.Logger.Info("Starting {Ip}:{Port}…", options.Ip, options.Port);
+            var provider = this.ProviderFactory.Create(options.Protocol);
+            provider.Connected += (_, e) => this.ClientFactory.CreateFor(e.Channel, options);
+            var endpoint = new IPEndPoint(LogListener.ParseIpAddress(options), options.Port);
+            provider.Connect(endpoint);
         }
     }
 

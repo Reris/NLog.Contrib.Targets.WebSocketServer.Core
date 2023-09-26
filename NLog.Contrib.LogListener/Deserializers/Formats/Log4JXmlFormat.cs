@@ -18,11 +18,37 @@ public class Log4JXmlFormat : IFormat
     /// </summary>
     private const string Any = "(.|\n|\r)";
 
+    private static readonly byte[] ValidStart = "<log4j"u8.ToArray();
+
     private readonly Regex _matcher = new(
         $"<log4j:event{Log4JXmlFormat.Any}*?/log4j:event>",
         RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
     public string GetDiscriminator() => Log4JXmlFormat.Discriminator;
+
+    public bool HasValidStart(ExtractInput input)
+    {
+        for (var i = 0; i < input.Data.Span.Length; i++)
+        {
+            var c = input.Data.Span[i];
+            switch ((char)c)
+            {
+                case '<':
+                    return input.Data.Span[i..(i + Log4JXmlFormat.ValidStart.Length)].SequenceEqual(Log4JXmlFormat.ValidStart);
+                case ' ':
+                case '\n':
+                case '\r':
+                case '\t':
+                    continue;
+                default:
+                {
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
 
     public Range GetSlice(ExtractInput input)
     {
@@ -43,7 +69,7 @@ public class Log4JXmlFormat : IFormat
         using var xmlReader = Log4JXmlFormat.CreateXmlReader(stringReader, ("log4j", log4JNamespace));
         var xml = XElement.Load(xmlReader);
         log4JNamespace = xml.Name.NamespaceName;
-        
+
         var messageXName = XName.Get("message", log4JNamespace);
         var propertiesXName = XName.Get("properties", log4JNamespace);
         var propertiesDataXName = XName.Get("data", log4JNamespace);

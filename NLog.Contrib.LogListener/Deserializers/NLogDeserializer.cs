@@ -18,8 +18,15 @@ public class NLogDeserializer : INLogDeserializer
 
     public ExtractResult TryExtract(ExtractInput input, bool skipException)
     {
+        var anyValidStart = false;
         foreach (var format in this._formats)
         {
+            if (!format.HasValidStart(input))
+            {
+                continue;
+            }
+
+            anyValidStart = true;
             var slice = format.GetSlice(input);
             if (slice.Equals(default))
             {
@@ -45,6 +52,6 @@ public class NLogDeserializer : INLogDeserializer
             }
         }
 
-        return new ExtractResult(false, null, input.Data);
+        return new ExtractResult(false, null, anyValidStart ? input.Data : ReadOnlyMemory<byte>.Empty);
     }
 }
