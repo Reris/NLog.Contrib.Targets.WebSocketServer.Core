@@ -7,12 +7,12 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <Authors>Rainer Erismann</Authors>
     <Company>Rainer Erismann</Company>
-    <PackageLicenseFile>../LICENSE</PackageLicenseFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup>
     <!-- Nuget semantic, like <Version>0.16.1-pre2</Version> -->
-    <Version>1.0.0-pre1</Version>
+    <Version>1.0.0</Version>
 
     <!-- File versioning, like <Version>0.16.1</Version> -->
     <FileVersion>1.0.0</FileVersion>

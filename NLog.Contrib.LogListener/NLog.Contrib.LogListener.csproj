@@ -3,6 +3,16 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
         <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>NLog.Contrib.LogListener</Title>
+        <Description>Configurable network listener library for log messages to redirect them to NLog. 
+Use it in your application if you want to collect other log sources through a network on a central location.
+Compatible with NLog and Serilog and every other logger which supports sending logs over tcp in json or log4jxml format.
+See NLog.Contrib.Targets.WebSocketServer.Core or docker Logair to use it as a collector for multiple processes.</Description>
+        <PackageProjectUrl>https://github.com/Reris/NLog.Contrib.Targets.WebSocketServer.Core</PackageProjectUrl>
+        <PackageIcon>Logair-128.png</PackageIcon>
+        <RepositoryUrl>https://github.com/Reris/NLog.Contrib.Targets.WebSocketServer.Core</RepositoryUrl>
+        <PackageTags>Logging NLog Serilog Tcp Network</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,5 +25,13 @@
     </ItemGroup>
 
 
+
+    <ItemGroup>
+      <None Include="..\assets\Logair-128.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+        <Link>Logair-128.png</Link>
+      </None>
+    </ItemGroup>
 
 </Project>
