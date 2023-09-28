@@ -90,12 +90,12 @@ CSV-example (used in Example.Slim)
 # NLog.Contrib.LogListener
 Listens on a network port to log events from other applications and handles them as local log events.
 
-This allows your application, like the **WebSocketServe.Core** to be a log collector of other, fully independant applications like MicroServices.
+This allows your application, like the **NLog.Contrib.Targets.WebSocketServer.Core** to be a log collector of other, fully independant applications like micro-services.
 Tested log sources are **NLog** and **Serilog**. But due to the slim and open protocol, others can be used as well.
 
 Main requirements of log sources:
 1. The need to be able to send formatted logs with a network sink/target
-2. The format has to be either compactjson, logstash, log4jxml, log4netxml or a format you would define on your own.
+2. The format has to be either compactjson, logstash, log4jxml, log4netxml or a format you can define on your own.
 
 There are serveral examples in **NLog.TcpListener.TestSender**.
 
