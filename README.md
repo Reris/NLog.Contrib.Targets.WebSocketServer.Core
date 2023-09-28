@@ -14,7 +14,7 @@ Viewing real-time logs should help you to:
 * Find performance issues in your application or across affected parts
 
 
-![](D:\NLog.Contrib.Targets.WebSocketServer.Core\assets\viewer1.jpg)
+![](assets\viewer1.jpg)
 
 The whole solution is not a part or alternative to OpenTelemetry, but can be used as a stepping stone in between.
 
