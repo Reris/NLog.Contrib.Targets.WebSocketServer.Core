@@ -1,0 +1,18 @@
+﻿{
+  "profiles": {
+    "Logair": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:55062/"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api/log"
+    }
+  }
+}

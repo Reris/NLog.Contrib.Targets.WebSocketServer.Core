@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Copyright>MIT</Copyright>
+    <Product>Logair</Product>
+    <Authors>Rainer Erismann</Authors>
+    <PackageId>Logair</PackageId>
+    <Description>Logair is a microservice to redistribute log messages compatible to log4j/log4net/nlog/etc.</Description>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <Company>Grokata</Company>
+    <PackageProjectUrl>https://github.com/Reris/NLog.Contrib.Targets.WebSocketServer.Core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Reris/NLog.Contrib.Targets.WebSocketServer.Core</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+    <PackageReference Include="NLog" Version="5.2.4" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NLog.Contrib.LogListener\NLog.Contrib.LogListener.csproj" />
+    <ProjectReference Include="..\NLog.Contrib.Targets.WebSocketServer.Core\NLog.Contrib.Targets.WebSocketServer.Core.csproj" />
+  </ItemGroup>
+
+
+</Project>

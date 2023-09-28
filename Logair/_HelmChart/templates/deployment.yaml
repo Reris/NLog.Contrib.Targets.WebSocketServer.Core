@@ -1,0 +1,138 @@
+﻿---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "apiTemplate.fullname" . }}
+  {{- include "apiTemplate.metadata" . | nindent 2 }}
+  labels:
+    {{- include "apiTemplate.labels" . | nindent 4 }}
+  annotations:
+    {{- include "apiTemplate.annotations" . | nindent 4 }}
+spec:
+  replicas: {{ default 1 .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "apiTemplate.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- include "apiTemplate.metadata" . | nindent 6 }}
+      labels:
+        {{- include "apiTemplate.labels" . | nindent 8 }}
+      annotations:
+        {{- include "apiTemplate.annotations" . | nindent 8 }}
+    spec:
+      {{- if (.Values.runAsUser | toString | ne "root")  }}
+      securityContext:
+        runAsUser: {{ .Values.runAsUser | default 33 }}
+        runAsGroup: {{ .Values.runAsGroup | default 33 }}
+        fsGroup: {{ .Values.runAsGroup | default 33 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ default "latest" .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: svcport
+              containerPort: {{ include "apiTemplate.service.port" . }}
+              protocol: TCP
+          {{- if .Values.probes -}}
+          {{- if .Values.probes.enabled | default false }}
+          startupProbe:
+            httpGet:
+              path: {{ default "/healthz" .Values.probes.path }}
+              port: svcport
+              httpHeaders:
+                - name: "x-probecheck"
+                  value: "startup"
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: {{ default 120 .Values.probes.startupFailureThreshold }}
+          livenessProbe:
+            httpGet:
+              path: {{ default "/healthz" .Values.probes.path }}
+              port: svcport
+              httpHeaders:
+                - name: "x-probecheck"
+                  value: "liveness"
+          {{- end -}}
+          {{- end }}
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:{{ include "apiTemplate.service.port" . }}
+            {{- range $ref, $values := .Values.secrets }}
+            {{- range $key, $value := $values }}
+            - name: {{ $ref }}_{{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "apiTemplate.fullname" $ }}-{{ $ref | lower }}
+                  key: {{ $key }}
+            {{- end -}}
+            {{- end }}
+            {{- range $ref, $values := .Values.envConfigMaps }}
+            {{- range $key, $value := $values }}
+            - name: {{ $ref }}_{{ $key }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "apiTemplate.fullname" $ }}-{{ $ref | lower }}
+                  key: {{ $key }}
+            {{- end -}}
+            {{- end }}
+            {{- range $name, $value := .Values.environment }}
+            - name: {{ $name }}
+              value: {{ toYaml $value | indent 14 | trim }}
+            {{- end }}
+          {{- if .Values.fileConfigMaps }}
+          volumeMounts:
+          {{- else if .Values.pathConfigMaps }}
+          volumeMounts:
+          {{- end }}
+            {{- range $name, $values := .Values.fileConfigMaps }}
+            {{- range $value := $values }}
+            - name: {{ $name | lower }}-configmap
+              mountPath: {{ $value.path }}{{ $value.file }}
+              subPath: {{ $value.file }}
+            {{- end }}
+            {{- end }}
+            {{- range $name, $value := .Values.pathConfigMaps }}
+            - name: {{ $name | lower }}-configmap
+              mountPath: {{ $value.path }}
+            {{- end }}
+          {{- if .Values.resources }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+      {{- if .Values.fileConfigMaps }}
+      volumes:
+      {{- else if .Values.pathConfigMaps }}
+      volumes:
+      {{- end }}
+        {{- range $name, $values := .Values.fileConfigMaps }}
+        - name: {{ $name | lower }}-configmap
+          configMap:
+            name: {{ template "apiTemplate.fullname" $ }}-{{ $name | lower }}
+        {{- end }}
+        {{- range $name, $values := .Values.pathConfigMaps }}
+        - name: {{ $name | lower }}-configmap
+          configMap:
+            name: {{ template "apiTemplate.fullname" $ }}-{{ $name | lower }}
+        {{- end }}
+      imagePullSecrets:
+    {{- if .Values.imagePullSecrets -}}
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+    {{- else }}
+        - name: image-registry-login
+    {{- end -}}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end -}}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}
+{{- end }}

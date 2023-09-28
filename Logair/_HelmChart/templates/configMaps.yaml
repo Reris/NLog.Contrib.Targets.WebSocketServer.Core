@@ -1,0 +1,51 @@
+﻿{{- range $name, $values := .Values.envConfigMaps }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "apiTemplate.fullname" $ }}-{{ $name | lower }}
+  {{- include "apiTemplate.metadata" $ | nindent 2 }}
+  labels:
+    {{- include "apiTemplate.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "apiTemplate.annotations" $ | nindent 4 }}
+data:
+  {{- range $key, $value := $values }}
+  {{ $key }}: |-
+    {{- $value | nindent 4 }}
+  {{- end }}
+---
+{{- end }}
+{{- range $name, $values := .Values.fileConfigMaps }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "apiTemplate.fullname" $ }}-{{ $name | lower }}
+  {{- include "apiTemplate.metadata" $ | nindent 2 }}
+  labels:
+    {{- include "apiTemplate.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "apiTemplate.annotations" $ | nindent 4 }}
+data:
+  {{- range $value := $values }}
+  {{ $value.file }}: |-
+    {{- $value.content | nindent 4 }}
+  {{- end }}
+---
+{{- end }}
+{{- range $name, $values := .Values.pathConfigMaps }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "apiTemplate.fullname" $ }}-{{ $name | lower }}
+  {{- include "apiTemplate.metadata" $ | nindent 2 }}
+  labels:
+    {{- include "apiTemplate.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "apiTemplate.annotations" $ | nindent 4 }}
+data:
+  {{- range $value := $values.files }}
+  {{ $value.file }}: |-
+    {{- $value.content | nindent 4 }}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <AssemblyName>Cider.Mill.Logair.UnitTests</AssemblyName>
+    <RootNamespace>Cider.Mill.Logair.UnitTests</RootNamespace>
+    <Authors>Rainer Erismann</Authors>
+    <Company>Grokata</Company>
+    <Product>Cider Microservices</Product>
+    <Description>UnitTests für Cider.</Description>
+    <PackageProjectUrl>https://gitlab.com/ciderferm/cider</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.com/ciderferm/cider</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    <PackageReference Include="NBuilder" Version="6.1.0" />
+    <PackageReference Include="NSubstitute" Version="5.1.0" />
+    <PackageReference Include="xunit" Version="2.5.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Logair\Logair.csproj" />
+  </ItemGroup>
+
+</Project>

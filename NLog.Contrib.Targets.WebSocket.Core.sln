@@ -29,6 +29,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.Contrib.LogListener.Un
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.TcpListener.TestSender", "NLog.TcpListener.TestSender\NLog.TcpListener.TestSender.csproj", "{628EEC22-3A96-44DD-B50B-812327D63CDD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logair", "Logair\Logair.csproj", "{C31CA8D1-0174-4522-94AC-D5AE4BC18EA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logair.UnitTests", "Logair.UnitTests\Logair.UnitTests.csproj", "{B044FCB8-DF7B-4AC1-BDE0-1BA863164D6E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,14 @@ Global
 		{628EEC22-3A96-44DD-B50B-812327D63CDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{628EEC22-3A96-44DD-B50B-812327D63CDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{628EEC22-3A96-44DD-B50B-812327D63CDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C31CA8D1-0174-4522-94AC-D5AE4BC18EA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C31CA8D1-0174-4522-94AC-D5AE4BC18EA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C31CA8D1-0174-4522-94AC-D5AE4BC18EA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C31CA8D1-0174-4522-94AC-D5AE4BC18EA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B044FCB8-DF7B-4AC1-BDE0-1BA863164D6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B044FCB8-DF7B-4AC1-BDE0-1BA863164D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B044FCB8-DF7B-4AC1-BDE0-1BA863164D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B044FCB8-DF7B-4AC1-BDE0-1BA863164D6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

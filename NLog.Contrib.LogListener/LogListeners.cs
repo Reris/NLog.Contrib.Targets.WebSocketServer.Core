@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,17 +26,22 @@ public static class LogListeners
             {
                 var tcp = options.Listeners[i];
                 var formatsSection = optionsSection.GetSection($"Listeners:{i}:Formats");
-                foreach (var formatOptionsSection in formatsSection.GetChildren())
-                {
-                    var typeName = formatOptionsSection.GetValue<string>("Type");
-                    var optionsType = registeredFormats.Formats.FirstOrDefault(a => a.Discriminator == typeName).OptionsType;
-                    if (optionsType is not null)
-                    {
-                        var formatOptions = (FormatOptions)Activator.CreateInstance(optionsType);
-                        formatOptionsSection.Bind(formatOptions);
-                        tcp.Formats.Add(formatOptions);
-                    }
-                }
+                LogListeners.BindFormatOptions(formatsSection, registeredFormats, tcp.Formats);
+            }
+        }
+    }
+
+    public static void BindFormatOptions(IConfigurationSection formatsSection, RegisteredFormats registeredFormats, List<FormatOptions> formatOptionsList)
+    {
+        foreach (var formatOptionsSection in formatsSection.GetChildren())
+        {
+            var typeName = formatOptionsSection.GetValue<string>("Type");
+            var optionsType = registeredFormats.Formats.FirstOrDefault(a => a.Discriminator == typeName).OptionsType;
+            if (optionsType is not null)
+            {
+                var formatOptions = (FormatOptions)Activator.CreateInstance(optionsType);
+                formatOptionsSection.Bind(formatOptions);
+                formatOptionsList.Add(formatOptions);
             }
         }
     }

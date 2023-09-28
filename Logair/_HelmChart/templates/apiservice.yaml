@@ -1,0 +1,20 @@
+﻿---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "apiTemplate.fullname" . }}
+  {{- include "apiTemplate.metadata" . | nindent 2 }}
+  labels:
+    {{- include "apiTemplate.labels" . | nindent 4 }}
+  annotations:
+    {{- include "apiTemplate.annotations" . | nindent 4 }}
+spec:
+  type: {{ include "apiTemplate.service.type" . }}
+  ports:
+    - name: http
+      port: {{ include "apiTemplate.service.port" . }}
+      targetPort: {{ include "apiTemplate.service.port" . }}
+      protocol: TCP
+  clusterIP: None
+  selector:
+    {{- include "apiTemplate.selectorLabels" . | nindent 4 }}

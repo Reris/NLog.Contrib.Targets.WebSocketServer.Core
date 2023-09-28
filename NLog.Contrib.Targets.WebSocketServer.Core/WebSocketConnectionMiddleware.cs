@@ -28,6 +28,9 @@ public class WebSocketConnectionMiddleware<T> : IMiddleware
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         var requestPath = context.Request.Path.Value?.TrimEnd('/') ?? string.Empty;
+        requestPath = requestPath == string.Empty && this._logViewerOptions.RedirectEmptyToViewer
+                          ? this._logViewerOptions.PathViewer
+                          : requestPath;
         requestPath = !string.IsNullOrWhiteSpace(this._logViewerOptions.RootPath)
                           ? requestPath.Replace(this._logViewerOptions.RootPath, string.Empty, StringComparison.OrdinalIgnoreCase)
                           : requestPath;
