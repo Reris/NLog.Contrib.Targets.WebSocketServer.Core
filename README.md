@@ -106,7 +106,15 @@ This is the Listener component. For installation advices of source applications,
 To create/install a log listener:
 1. It can be used on any kind of .Net projects: Asp.Net Core, Console, etc
 2. Install NLog via NuGet
-3. Install NLog.Contrib.Targets.WebSocketServer.Core
+3. Install NLog.Contrib.LogListener
+
+### NuGet
+
+[NLog.Contrib.LogListener is available in NuGet](https://www.nuget.org/packages/NLog.Contrib.LogListener/).
+
+```
+PM> Install-Package NLog.Contrib.LogListener
+```
 
 ## Configuration
 
