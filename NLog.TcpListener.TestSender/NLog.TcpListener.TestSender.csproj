@@ -53,6 +53,10 @@
       <Content Include="Serilog.jsoncompact.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+      <None Remove="NLog.jsoncompact.config" />
+      <Content Include="NLog.jsoncompact.config">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

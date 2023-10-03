@@ -118,10 +118,13 @@ public class JsonFormat : IFormat, IConfigurable
             {
                 o.TimestampNames.Add("@t");
                 o.LevelNames.Add("@l");
+                o.SourceContextNames.Add("@s");
                 o.SourceContextNames.Add("SourceContext");
                 o.MessageNames.Add("@mt");
                 o.MessageNames.Add("@m");
+                o.ProcessNames.Add("@pn");
                 o.ProcessNames.Add("ProcessName");
+                o.MachineNames.Add("@mn");
                 o.MachineNames.Add("MachineName");
             }
         }

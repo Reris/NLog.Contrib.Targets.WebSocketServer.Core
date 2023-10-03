@@ -98,11 +98,11 @@ public class JsonFormat_Tests
         result.Level.Should().Be(LogLevel.FromOrdinal((int)expected));
     }
 
-    [Fact]
-    public void Deserialize_NLogFullStandard_ShouldReturnFilled()
+    [Theory]
+    [InlineData("""{"timestamp":"2023-09-09T14:25:47.4423593+02:00","sourceContext":"Foo","level":"TRACE","message":"Bar","processName":"Company.MyApp","machineName":"97d38438edf9"}""")]
+    public void Deserialize_NLogFullLogStash_ShouldReturnFilled(string data)
     {
         // Arrange
-        const string data = """{"sourceContext":"Foo","level":"TRACE","message":"Bar","processName":"Company.MyApp","machineName":"97d38438edf9"}""";
         var testee = this.CreateTestee();
         var input = this.CreateInput(data);
         var range = new Range(0, data.Length);
@@ -111,6 +111,30 @@ public class JsonFormat_Tests
         var result = testee.Deserialize(input, range);
 
         // Assert
+        result.TimeStamp.Should().Be(DateTime.Parse("2023-09-09T14:25:47.4423593+02:00"));
+        result.LoggerName.Should().Be("Foo");
+        result.Level.Should().Be(LogLevel.Trace);
+        result.Message.Should().Be("Bar");
+        result.Properties["@pn"].Should().Be("Company.MyApp");
+        result.Properties["@mn"].Should().Be("97d38438edf9");
+    }
+    
+    [Theory]
+    [InlineData("""{"@t":"2023-09-09T14:25:47.4423593+02:00","SourceContext":"Foo","@l":"TRACE","@m":"Bar","ProcessName":"Company.MyApp","MachineName":"97d38438edf9"}""")]
+    [InlineData("""{"@t":"2023-09-09T14:25:47.4423593+02:00","@s":"Foo","@l":"TRACE","@m":"Bar","@pn":"Company.MyApp","@mn":"97d38438edf9"}""")]
+    public void Deserialize_NLogFullCompact_ShouldReturnFilled(string data)
+    {
+        // Arrange
+        var testee = this.CreateTestee();
+        testee.Configure(new JsonFormat.Options { Schemes = new [] { "compact" } });
+        var input = this.CreateInput(data);
+        var range = new Range(0, data.Length);
+
+        // Act
+        var result = testee.Deserialize(input, range);
+
+        // Assert
+        result.TimeStamp.Should().Be(DateTime.Parse("2023-09-09T14:25:47.4423593+02:00"));
         result.LoggerName.Should().Be("Foo");
         result.Level.Should().Be(LogLevel.Trace);
         result.Message.Should().Be("Bar");
@@ -118,5 +142,6 @@ public class JsonFormat_Tests
         result.Properties["@mn"].Should().Be("97d38438edf9");
     }
 
-    private ExtractInput CreateInput(string data) => new(data, new ListenerOptions { Formats = { new JsonFormat.Options() } });
+    private ExtractInput CreateInput(string data)
+        => new(data, new ListenerOptions { Formats = { new JsonFormat.Options() } });
 }

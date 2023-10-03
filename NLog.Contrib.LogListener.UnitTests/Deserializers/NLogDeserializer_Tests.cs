@@ -184,9 +184,9 @@ public class NLogDeserializer_Tests
     }
     
     [Theory]
-    [InlineData("<log4")]
+    [InlineData("<log4j")]
     [InlineData("""{"logge""")]
-    [InlineData(" \t\n <log4")]
+    [InlineData(" \t\n <log4j")]
     [InlineData(" \t\n {\"logge")]
     public void TryExtract_Incomplete_ShouldReturn(string data)
     {
@@ -214,7 +214,9 @@ public class NLogDeserializer_Tests
         var result = testee.TryExtract(input);
 
         // Assert
-        result.Should().Be(new ExtractResult(false, null, ""));
+        result.Succeeded.Should().BeFalse();
+        result.Result.Should().BeNull();
+        result.LeftoverString.Should().Be("");
     }
 
     private ExtractInput CreateInput(string data)

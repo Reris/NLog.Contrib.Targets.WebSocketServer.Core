@@ -15,6 +15,14 @@ spec:
       port: {{ include "apiTemplate.service.port" . }}
       targetPort: {{ include "apiTemplate.service.port" . }}
       protocol: TCP
+    {{- if .Values.service -}}
+    {{- if .Values.service.listenerPort }}
+    - name: listener
+      port: {{ .Values.service.listenerPort }}
+      targetPort: {{ .Values.service.listenerPort }}
+      protocol: TCP
+    {{- end -}}
+    {{- end }}
   clusterIP: None
   selector:
     {{- include "apiTemplate.selectorLabels" . | nindent 4 }}

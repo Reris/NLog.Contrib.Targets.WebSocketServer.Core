@@ -1,61 +1,60 @@
-﻿# NOTE: Currently under development
-
-fullname: logair
-replicaCount: 1
+﻿fullname: logair
 image:
   repository: reris/logair
+  tag: 1.0.1
   
 environment:
   LOGAIR_VERBOSELEVEL: "WARN"
 
-pathConfigMaps:
-  nlogconfig:
-    path: /app/
-    files:
-      - file: NLog.config
-        content: |-
-          <?xml version="1.0" encoding="utf-8"?>
-          <nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.nlog-project.org/schemas/NLog.xsd NLog.xsd" autoReload="true">
-            <extensions>
-              <add assembly="NLog.Contrib.Targets.WebSocketServer.Core"/>
-              <add assembly="NLog.Web.AspNetCore"/>
-            </extensions>
-            <targets async="true">
-              <target xsi:type="Console" layout="${longdate}|${level:uppercase=true}|${logger}|${message}" name="consolelog"/>
-              <target xsi:type="NLog.Contrib.Targets.WebSocketServer.Core" name="websocket" throwExceptionIfSetupFails="true">
-                <layout xsi:type="JsonLayout">
-                  <attribute name="@t" layout="${longdate}"/>
-                  <attribute name="@l" layout="${level}"/>
-                  <attribute name="@s" layout="${logger}"/>
-                  <attribute name="@mn" layout="${event-properties:machinename:whenEmpty=${machinename}}"/>
-                  <attribute name="@pn" layout="${event-properties:processname:whenEmpty=${processname}}"/>
-                  <attribute name="@m" layout="${message}"/>
-                </layout>
-              </target>
-            </targets>
-            <rules>
-              <logger name="*" minlevel="Trace" writeTo="websocket, consolelog"/>
-            </rules>
-          </nlog>
-      - file: appsettings-listeners.json
-        content: |-
-          {
-            "LogListener": {
-              "LogInternals": false,
-              "Listeners": [
-                {
-                  "Formats": [
-                    { "Type": "json" }
-                  ]
-                }
-              ]
-            },
-            "HttpLogListener": {
-              "Formats": [
-                { "Type": "json" }
-              ]
-            }
-          }
-
 probes:
   enabled: true
+
+fileConfigMaps:
+  nlogconfig:
+    - path: /app/
+      file: NLog.config
+      content: |-
+        <?xml version="1.0" encoding="utf-8"?>
+        <nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.nlog-project.org/schemas/NLog.xsd NLog.xsd" autoReload="true">
+          <extensions>
+            <add assembly="NLog.Contrib.Targets.WebSocketServer.Core"/>
+            <add assembly="NLog.Web.AspNetCore"/>
+          </extensions>
+          <targets async="true">
+            <target xsi:type="Console" layout="${longdate}|${level:uppercase=true}|${logger}|${message}" name="consolelog"/>
+            <target xsi:type="NLog.Contrib.Targets.WebSocketServer.Core" name="websocket" throwExceptionIfSetupFails="true">
+              <layout xsi:type="JsonLayout">
+                <attribute name="@t" layout="${longdate}"/>
+                <attribute name="@l" layout="${level}"/>
+                <attribute name="@s" layout="${logger}"/>
+                <attribute name="@mn" layout="${event-properties:@mn:whenEmpty=${machinename}}"/>
+                <attribute name="@pn" layout="${event-properties:@pn:whenEmpty=${processname}}"/>
+                <attribute name="@m" layout="${message}"/>
+              </layout>
+            </target>
+          </targets>
+          <rules>
+            <logger name="*" minlevel="Trace" writeTo="websocket, consolelog"/>
+          </rules>
+        </nlog>
+  listenersconfig:
+    - path: /app/
+      file: appsettings-listeners.json
+      content: |-
+        {
+          "LogListener": {
+            "LogInternals": false,
+            "Listeners": [
+              {
+                "Formats": [
+                  { "Type": "json", "Schemes": ["compact", "logstash"] }
+                ]
+              }
+            ]
+          },
+          "HttpLogListener": {
+            "Formats": [
+              { "Type": "json", "Schemes": ["compact", "logstash"] }
+            ]
+          }
+        }
