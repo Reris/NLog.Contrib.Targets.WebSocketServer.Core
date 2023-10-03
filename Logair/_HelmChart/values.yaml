@@ -28,7 +28,7 @@ fileConfigMaps:
                 <attribute name="@l" layout="${level}"/>
                 <attribute name="@s" layout="${logger}"/>
                 <attribute name="@mn" layout="${event-properties:@mn:whenEmpty=${machinename}}"/>
-                <attribute name="@pn" layout="${event-properties:@pn:whenEmpty=${processname}}"/>
+                <attribute name="@pn" layout="${event-properties:@pn:whenEmpty=${appdomain:format={1\}}}"/>
                 <attribute name="@m" layout="${message}"/>
               </layout>
             </target>
