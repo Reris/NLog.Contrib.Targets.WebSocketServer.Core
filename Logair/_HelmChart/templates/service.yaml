@@ -13,16 +13,18 @@ spec:
   ports:
     - name: http
       port: {{ include "apiTemplate.service.port" . }}
-      targetPort: {{ include "apiTemplate.service.port" . }}
+      targetPort: 8080
       protocol: TCP
     {{- if .Values.service -}}
     {{- if .Values.service.listenerPort }}
     - name: listener
       port: {{ .Values.service.listenerPort }}
-      targetPort: {{ .Values.service.listenerPort }}
+      targetPort: 4505
       protocol: TCP
     {{- end -}}
     {{- end }}
+  {{- if eq (include "apiTemplate.service.type" .) "ClusterIP" }}
   clusterIP: None
+  {{- end }}
   selector:
     {{- include "apiTemplate.selectorLabels" . | nindent 4 }}
