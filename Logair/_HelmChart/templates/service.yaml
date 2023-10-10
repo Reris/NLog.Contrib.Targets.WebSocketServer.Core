@@ -15,14 +15,10 @@ spec:
       port: {{ include "apiTemplate.service.port" . }}
       targetPort: 8080
       protocol: TCP
-    {{- if .Values.service -}}
-    {{- if .Values.service.listenerPort }}
     - name: listener
-      port: {{ .Values.service.listenerPort }}
+      port: {{ include "apiTemplate.service.listenerPort" . }}
       targetPort: 4505
       protocol: TCP
-    {{- end -}}
-    {{- end }}
   {{- if eq (include "apiTemplate.service.type" .) "ClusterIP" }}
   clusterIP: None
   {{- end }}

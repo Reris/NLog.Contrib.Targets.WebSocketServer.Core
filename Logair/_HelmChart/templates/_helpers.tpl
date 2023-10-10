@@ -61,7 +61,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Annotation labels
 */}}
 {{- define "apiTemplate.annotations" -}}
-timestamp: {{ required "Install requires a --set-string timestamp" .Values.timestamp | trim }}
+timestamp: {{ required "Install requires a --set timestamp" .Values.timestamp | trim }}
 {{- end }}
 
 
@@ -74,6 +74,18 @@ Da Moustache leider keine ?. Operatoren kann
 {{- default 8080 .Values.service.port -}}
 {{- else -}}
 {{- 8080 -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create a default service info.
+Da Moustache leider keine ?. Operatoren kann
+*/}}
+{{- define "apiTemplate.service.listenerPort" -}}
+{{- if .Values.service -}}
+{{- default 4505 .Values.service.listenerPort -}}
+{{- else -}}
+{{- 4505 -}}
 {{- end -}}
 {{- end -}}
 
