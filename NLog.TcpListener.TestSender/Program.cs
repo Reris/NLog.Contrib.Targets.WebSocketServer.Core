@@ -8,6 +8,9 @@ using CommandLine;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using NLog;
+using Sender;
+using Sender.Detail;
+using Sender.Detail.Data;
 using Serilog;
 using Serilog.Events;
 
@@ -90,9 +93,11 @@ static Task Loop(Func<CancellationToken, Task> func, CancellationTokenSource can
 static LoggerFunc GetNLogger(Options options)
 {
     LogManager.Setup().LoadConfigurationFromFile(options.ConfigFile, false);
-    var logger = LogManager.GetCurrentClassLogger();
+    var loggers = new[] { LogManager.GetLogger(typeof(Foo).FullName), LogManager.GetLogger(typeof(Bar).FullName), LogManager.GetLogger(typeof(Baz).FullName) };
+    var rotate = 0u;
     return (level, messageTemplate, param) =>
     {
+        var logger = loggers[unchecked(rotate++ % loggers.Length)];
         var logLevel = LogLevel.FromOrdinal(((int)level - 1) % 6);
         // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
         logger.Log(logLevel, messageTemplate, param);
@@ -109,9 +114,11 @@ static LoggerFunc GetSeriLogger(Options options)
     var logConfig = new LoggerConfiguration()
                     .ReadFrom.Configuration(configuration);
     Log.Logger = logConfig.CreateLogger();
-    var logger = Log.Logger.ForContext<Program>();
+    var loggers = new[] { Log.Logger.ForContext<Foo>(), Log.Logger.ForContext<Bar>(), Log.Logger.ForContext<Baz>() };
+    var rotate = 0u;
     return (level, messageTemplate, param) =>
     {
+        var logger = loggers[unchecked(rotate++ % loggers.Length)];
         var logLevel = (LogEventLevel)((level - 1) % 6);
         // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
         logger.Write(logLevel, messageTemplate, param);
@@ -120,6 +127,26 @@ static LoggerFunc GetSeriLogger(Options options)
 
 internal delegate void LoggerFunc(uint level, string messageTemplate, uint param);
 
+namespace Sender
+{
+    public class Foo
+    {
+    }
+}
+
+namespace Sender.Detail
+{
+    public class Bar
+    {
+    }
+}
+
+namespace Sender.Detail.Data
+{
+    public class Baz
+    {
+    }
+}
 
 [PublicAPI]
 #pragma warning disable CA1050
